@@ -4,9 +4,9 @@
 <div align=center style="flex-direction: column">
   <h3>Tech Stack</h3>
   <div class="img-container-1">
-    <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> 
+    <img src="https://img.shields.io/badge/java_JDK17-007396?style=for-the-badge&logo=java&logoColor=white"> 
     <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
-    <img src="https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
+    <img src="https://img.shields.io/badge/spring_boot_3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
     <img src="https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
   </div>
   <div class="img-container-2">
