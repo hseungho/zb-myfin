@@ -1,27 +1,6 @@
 # 🏦 MyFin 핀테크 서비스 만들기
 계좌를 통해 입금, 출금, 송금 등의 서비스를 제공하는 나만의 간단한 핀테크 서비스입니다. 
 
-<div align=center style="flex-direction: column">
-  <h3>Tech Stack</h3>
-  <div class="img-container-1">
-    <img src="https://img.shields.io/badge/java_JDK17-007396?style=for-the-badge&logo=java&logoColor=white"> 
-    <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
-    <img src="https://img.shields.io/badge/spring_boot_3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
-    <img src="https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
-  </div>
-  <div class="img-container-2">
-    <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> 
-    <img src="https://img.shields.io/badge/maria_db-1F305F?style=for-the-badge&logo=mariaDB&logoColor=white"> 
-    <img src="https://img.shields.io/badge/amazon_aws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-    <img src="https://img.shields.io/badge/amazon_ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
-  </div>
-  <div class="img-container-3">
-    <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-    <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-    <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
-  </div>
-</div>
-
 ## 🏢 프로젝트
 ### 프로젝트(서비스) 이름
 MyFin (My-Fintech)
@@ -98,4 +77,26 @@ MyFin (My-Fintech)
 ## 🪠 Trouble Shooting
 [go to the trouble shooting section](docs/Trouble_Shooting.md)
 
+***
+
+<div align=center style="flex-direction: column">
+  <h2>Tech Stack</h2>
+  <div class="img-container-1">
+    <img src="https://img.shields.io/badge/java_JDK17-007396?style=for-the-badge&logo=java&logoColor=white"> 
+    <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
+    <img src="https://img.shields.io/badge/spring_boot_3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
+    <img src="https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
+  </div>
+  <div class="img-container-2">
+    <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> 
+    <img src="https://img.shields.io/badge/maria_db-1F305F?style=for-the-badge&logo=mariaDB&logoColor=white"> 
+    <img src="https://img.shields.io/badge/amazon_aws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
+    <img src="https://img.shields.io/badge/amazon_ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
+  </div>
+  <div class="img-container-3">
+    <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+    <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+    <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+  </div>
+</div>
 
