@@ -72,7 +72,7 @@ MyFin (My-Fintech)
 > ~~Notion 이용 예정~~
 
 ## 🪟 ERD
-> ~~이미지 첨부 예정~~
+![ERD](docs/img/MyFin-ERD.png)
 
 ## 🪠 Trouble Shooting
 [go to the trouble shooting section](docs/Trouble_Shooting.md)
