@@ -23,8 +23,8 @@ MyFin (My-Fintech)
 
 - 로그인 기능
   - 사용자는 로그인을 할 수 있다. 로그인 시 회원가입 때 입력한 `아이디와 패스워드`가 일치해야 한다.
-  - 로그인은 Stateless한 JWT 토큰을 활용하며, 로그인의 응답으로 `AccessToken과 RefreshToken`을 반환하며, 토큰 리프레시에 대한 API도 요구된다.
-   
+  - 로그인은 JWT 토큰을 활용하며, 로그인의 응답으로 `AccessToken과 RefreshToken`을 반환한다.
+
 
 - 계좌 관리 기능
   - 생성
