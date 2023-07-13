@@ -11,7 +11,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">Name API</summary>
 
 ### 검토한 정보
-```json
+```
 
 ```
 
@@ -34,7 +34,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">아이디 중복확인 API</summary>
 
 ### 검토한 정보
-```json
+```
 - GET /sign-up/check-id?key={userId}
 - 파라미터: 아이디
 - 정책
@@ -66,7 +66,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">휴대폰 본인인증 문자발신요청 API</summary>
 
 ### 검토한 정보
-```json
+```
 - POST /api/v1/sign-up/verify/request
 - 파라미터: 휴대폰번호
 - 정책
@@ -100,7 +100,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">휴대폰 본인인증 인증요청 API</summary>
 
 ### 검토한 정보
-```json
+```
 - POST /api/v1/sign-up/verify
 - 파라미터: 휴대폰번호, 인증코드
 - 정책
@@ -146,7 +146,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">회원가입 API</summary>
 
 ### 검토한 정보
-```json
+```
 - POST /api/v1/sign-up
 - 파라미터: 아이디, 패스워드, 성명, 생년월일(yyyy-MM-dd), 도로명주소, 상세주소, 휴대폰번호, 이메일주소
 - 정책
@@ -197,7 +197,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 <summary style="font-size: large; font-weight: bold">로그인 API</summary>
 
 ### 검토한 정보
-```json
+```
 - POST /api/v1/login
 - 파라미터: 아이디, 패스워드
 - 정책
