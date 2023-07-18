@@ -39,9 +39,11 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
 
     @Override
     @Transactional
-    public LocalDateTime sendPhoneMessageForVerifyingIdentity(String phoneNum) {
+    public LocalDateTime sendPhoneMessageForVerifyingIdentity(String requestedPhoneNum) {
         // 요청 검증
-        validateSendPhoneMessageRequest(phoneNum);
+        validateSendPhoneMessageRequest(requestedPhoneNum);
+
+        final String phoneNum = requestedPhoneNum.replace("-", "");
 
         // 캐시 저장소에서 휴대폰번호로 조회 후 존재하면 삭제
         cacheVerifyCodeRepository.findByPhoneNum(phoneNum)
