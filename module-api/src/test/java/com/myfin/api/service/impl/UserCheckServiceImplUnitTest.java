@@ -1,5 +1,6 @@
 package com.myfin.api.service.impl;
 
+import com.myfin.core.exception.impl.BadRequestException;
 import com.myfin.core.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,27 @@ class UserCheckServiceImplUnitTest {
         boolean result = userCheckService.checkUserIdAvailable("user-id");
         // then
         Assertions.assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("아이디 사용가능여부 확인 - blank & null")
+    void test_checkUserIdAvailable_request_is_blank() {
+        // given
+        // when
+        BadRequestException ex_blank = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> userCheckService.checkUserIdAvailable("")
+        );
+        BadRequestException ex_null = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> userCheckService.checkUserIdAvailable(null)
+        );
+        // then
+        Assertions.assertEquals(400, ex_blank.getHttpStatus());
+        Assertions.assertEquals("중복확인할 아이디를 입력해주세요.", ex_blank.getErrorMessage());
+        Assertions.assertEquals(400, ex_null.getHttpStatus());
+        Assertions.assertEquals("중복확인할 아이디를 입력해주세요.", ex_null.getErrorMessage());
+
     }
 
 }
