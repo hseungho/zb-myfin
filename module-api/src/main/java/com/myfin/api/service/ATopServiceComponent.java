@@ -2,6 +2,11 @@ package com.myfin.api.service;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * ATopServiceComponent 클래스는 Service 클래스들의 최상위 클래스로써, <br>
+ * 다수의 Service 클래스에서 사용되는 기능들을 정의하도록 한 클래스이다. <br>
+ * 클래스 앞에 `A` 접두사가 붙은 이유는 알파벳순으로 패키지 최상단에 위치하고자 함이다.
+ */
 public class ATopServiceComponent {
 
     /**
