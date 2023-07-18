@@ -15,7 +15,9 @@ repositories {
     mavenCentral()
 }
 
-dependencies {}
+dependencies {
+    implementation 'net.nurigo:sdk:4.3.0'
+}
 
 tasks.named('test') {
     useJUnitPlatform()
