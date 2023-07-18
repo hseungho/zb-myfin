@@ -27,7 +27,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public VerifyRequestIdentity.Response sendPhoneMessageForVerifyingIdentity(
             @RequestBody @Valid VerifyRequestIdentity.Request request) {
-        return VerifyRequestIdentity.Response.of();
+        return VerifyRequestIdentity.Response.of(
+                userCheckService.sendPhoneMessageForVerifyingIdentity(request.getPhoneNum())
+        );
     }
 
 }

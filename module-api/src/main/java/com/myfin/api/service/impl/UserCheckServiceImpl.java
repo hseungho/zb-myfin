@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +25,11 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
             throw new BadRequestException("중복확인할 아이디를 입력해주세요.");
         }
         return !userRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public LocalDateTime sendPhoneMessageForVerifyingIdentity(String phoneNum) {
+        return null;
     }
 
 }
