@@ -1,6 +1,6 @@
 package com.myfin.core.base;
 
-import com.myfin.core.util.date.SeoulDateTime;
+import com.myfin.core.util.SeoulDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
