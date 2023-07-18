@@ -53,6 +53,7 @@ project(':module-api') {
     dependencies {
         compileOnly project(':module-core')
         compileOnly project(':module-adapter')
+        compileOnly project(':module-cache')
     }
 }
 
