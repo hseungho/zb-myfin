@@ -1,5 +1,6 @@
 package com.myfin.api.service.impl;
 
+import com.myfin.api.service.ATopServiceComponent;
 import com.myfin.api.service.UserCheckService;
 import com.myfin.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserCheckServiceImpl implements UserCheckService {
+public class UserCheckServiceImpl extends ATopServiceComponent implements UserCheckService {
 
     private final UserRepository userRepository;
 
