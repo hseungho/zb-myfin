@@ -1,2 +1,3 @@
 rootProject.name = 'my-fin'
-include 'core'
+include 'module-core'
+include 'module-api'

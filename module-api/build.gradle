@@ -4,17 +4,11 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'com.zerobase.hseungho'
-version = '0.0.1-SNAPSHOT'
+group = 'com.myfin'
+version = '0.0.1'
 
 java {
     sourceCompatibility = '17'
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
 }
 
 repositories {
@@ -22,19 +16,15 @@ repositories {
 }
 
 dependencies {
-    // web
+    implementation project(':module-core')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
-    // util
     compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -42,5 +32,5 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-bootJar{enabled=false}
-jar{enabled=false}
+bootJar {enabled = true}
+jar {enabled=true}
