@@ -1,3 +1,4 @@
 rootProject.name = 'my-fin'
 include 'module-core'
 include 'module-api'
+include 'module-adapter'
