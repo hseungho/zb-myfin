@@ -1,4 +1,4 @@
-package com.myfin.core.util.date;
+package com.myfin.core.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
