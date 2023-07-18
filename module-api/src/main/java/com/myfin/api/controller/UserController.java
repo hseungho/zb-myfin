@@ -39,7 +39,9 @@ public class UserController {
     public VerifyIdentity.Response verifyIdentity(
             @RequestBody @Valid VerifyIdentity.Request request) {
 
-        return VerifyIdentity.Response.fromDto();
+        return VerifyIdentity.Response.fromDto(
+                userCheckService.verifyIdentity(request)
+        );
     }
 
 }

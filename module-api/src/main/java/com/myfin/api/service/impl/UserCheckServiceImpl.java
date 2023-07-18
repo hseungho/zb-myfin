@@ -1,6 +1,8 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.adapter.coolsms.SMSMessageComponent;
+import com.myfin.api.dto.VerifyIdentity;
+import com.myfin.api.dto.VerifyIdentityResultDto;
 import com.myfin.api.service.ATopServiceComponent;
 import com.myfin.api.service.UserCheckService;
 import com.myfin.cache.entity.CacheVerifyCode;
@@ -35,12 +37,6 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
         return !userRepository.existsByUserId(userId);
     }
 
-    private void validateCheckUserIdAvailableRequest(String userId) {
-        if (hasNotTexts(userId)) {
-            throw new BadRequestException("중복확인할 아이디를 입력해주세요.");
-        }
-    }
-
     @Override
     @Transactional
     public LocalDateTime sendPhoneMessageForVerifyingIdentity(String phoneNum) {
@@ -62,6 +58,17 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
 
         // 현재시간 반환
         return SeoulDateTime.now();
+    }
+
+    @Override
+    public VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request) {
+        return null;
+    }
+
+    private void validateCheckUserIdAvailableRequest(String userId) {
+        if (hasNotTexts(userId)) {
+            throw new BadRequestException("중복확인할 아이디를 입력해주세요.");
+        }
     }
 
     private void validateSendPhoneMessageRequest(String phoneNum) {

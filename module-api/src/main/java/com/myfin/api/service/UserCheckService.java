@@ -1,5 +1,8 @@
 package com.myfin.api.service;
 
+import com.myfin.api.dto.VerifyIdentity;
+import com.myfin.api.dto.VerifyIdentityResultDto;
+
 import java.time.LocalDateTime;
 
 public interface UserCheckService {
@@ -18,4 +21,10 @@ public interface UserCheckService {
      */
     LocalDateTime sendPhoneMessageForVerifyingIdentity(String phoneNum);
 
+    /**
+     * 휴대폰 본인인증 검증.
+     * @param request 본인인증 검증 요청 DTO 클래스
+     * @return 본인인증 검증 DTO 클래스
+     */
+    VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request);
 }
