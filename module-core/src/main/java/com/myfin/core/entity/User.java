@@ -1,5 +1,6 @@
 package com.myfin.core.entity;
 
+import com.myfin.core.BaseEntity;
 import com.myfin.core.type.SexType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class User {
+public class User extends BaseEntity {
 
     /** User PK ID */
     @Id

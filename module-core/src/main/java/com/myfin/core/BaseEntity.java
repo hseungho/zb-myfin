@@ -1,4 +1,4 @@
-package com.myfin.core.base;
+package com.myfin.core;
 
 import com.myfin.core.util.SeoulDateTime;
 import jakarta.persistence.Column;
