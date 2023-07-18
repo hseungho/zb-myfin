@@ -55,5 +55,11 @@ project(':module-api') {
     }
 }
 
+project(':module-adapter') {
+    dependencies {
+        compileOnly project(':module-core')
+    }
+}
+
 bootJar{enabled=false}
 jar{enabled=false}

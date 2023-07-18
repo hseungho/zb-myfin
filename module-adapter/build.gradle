@@ -16,6 +16,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':module-core')
+
     implementation 'net.nurigo:sdk:4.3.0'
 }
 

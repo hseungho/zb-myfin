@@ -1,5 +1,6 @@
 package com.myfin.adapter.coolsms;
 
+import com.myfin.core.exception.impl.InternalServerException;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -36,10 +37,10 @@ public class SMSMessageComponent {
         } catch (Exception e) {
             final String toNum = toNumber.replace("-", "")
                             .replace(toNumber.substring(3, 7), "****");
-            
+
             log.error("Occurred Exception during send SMS to "+toNum+".", e);
 
-            throw new RuntimeException();
+            throw new InternalServerException("본인확인 인증 메시지 발송 중에 오류가 발생하였습니다. 관리자에게 문의해주세요.");
         }
     }
 
