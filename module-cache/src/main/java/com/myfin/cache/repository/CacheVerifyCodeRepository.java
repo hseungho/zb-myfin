@@ -1,9 +1,14 @@
 package com.myfin.cache.repository;
 
 import com.myfin.cache.entity.CacheVerifyCode;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-@EnableRedisRepositories
+import java.util.Optional;
+
+@Repository
 public interface CacheVerifyCodeRepository extends CrudRepository<CacheVerifyCode, String> {
+
+    Optional<CacheVerifyCode> findByPhoneNum(String phoneNum);
+
 }

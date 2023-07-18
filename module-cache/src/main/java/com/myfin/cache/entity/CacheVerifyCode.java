@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 @RedisHash(value = "VerifyCode", timeToLive = 180L) // TTL: 3분
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE, staticName = "of")
+@AllArgsConstructor(staticName = "of")
 public class CacheVerifyCode {
 
     @Id
