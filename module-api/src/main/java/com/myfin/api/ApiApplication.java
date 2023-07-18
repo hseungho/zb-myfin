@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"com.myfin.core.entity", "com.myfin.cache"})
-@ComponentScan(basePackages = {"com.myfin.core", "com.myfin.cache"})
+@ComponentScan(basePackages = {"com.myfin"})
 public class ApiApplication {
 
     public static void main(String[] args) {

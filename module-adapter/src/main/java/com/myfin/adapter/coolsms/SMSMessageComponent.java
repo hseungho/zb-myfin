@@ -29,7 +29,7 @@ public class SMSMessageComponent {
         Message message = new Message();
         message.setFrom(this.fromNumber);
         message.setTo(toNumber.replace("-", ""));
-        message.setText("[마이핀페이] 본인확인 인증번호["+verifyCode+"]를 화면에 입력해주세요.");
+        message.setText("[마이핀페이] 본인확인 인증번호["+verifyCode+"]를 입력해주세요.");
 
         try {
             this.messageService.send(message);
