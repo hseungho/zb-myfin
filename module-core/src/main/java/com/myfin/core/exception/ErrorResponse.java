@@ -1,6 +1,6 @@
 package com.myfin.core.exception;
 
-import com.myfin.core.BaseAbstractRestApiException;
+import com.myfin.core.AbstractRestApiException;
 import com.myfin.core.util.SeoulDateTime;
 import lombok.*;
 
@@ -15,7 +15,7 @@ public class ErrorResponse {
     private String errorMessage;
     private String path;
 
-    public static ErrorResponse errorResponse(BaseAbstractRestApiException ex, String path) {
+    public static ErrorResponse errorResponse(AbstractRestApiException ex, String path) {
         return ErrorResponse.builder()
                 .timestamp(SeoulDateTime.now().toString())
                 .httpStatus(ex.getHttpStatus())

@@ -1,8 +1,8 @@
 package com.myfin.core;
 
-public abstract class BaseAbstractRestApiException extends RuntimeException {
+public abstract class AbstractRestApiException extends RuntimeException {
 
-    public BaseAbstractRestApiException(String errorMessage) {
+    public AbstractRestApiException(String errorMessage) {
         super(errorMessage);
     }
 

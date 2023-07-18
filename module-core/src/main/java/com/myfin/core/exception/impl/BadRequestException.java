@@ -1,8 +1,8 @@
 package com.myfin.core.exception.impl;
 
-import com.myfin.core.BaseAbstractRestApiException;
+import com.myfin.core.AbstractRestApiException;
 
-public class BadRequestException extends BaseAbstractRestApiException {
+public class BadRequestException extends AbstractRestApiException {
 
     private final String errorMessage;
 
