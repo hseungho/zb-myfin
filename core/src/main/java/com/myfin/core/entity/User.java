@@ -43,17 +43,9 @@ public class User {
     @Column(name = "sex_flag", nullable = false, columnDefinition = "TINYINT(1) NOT NULL")
     private SexType sex;
 
-    /** 유저의 우편번호 */
-    @Column(name = "zip_code", nullable = false)
-    private String zipCode;
-
-    /** 유저의 도로명 주소 */
-    @Column(name = "address_1", nullable = false)
-    private String address1;
-
-    /** 유저의 상세 주소 */
-    @Column(name = "address_2")
-    private String address2;
+    /** 유저의 주소 정보 */
+    @Embedded
+    private UserAddressVO userAddress;
 
     /** 유저의 휴대폰번호 */
     @Column(name = "phone_num", nullable = false, unique = true)
