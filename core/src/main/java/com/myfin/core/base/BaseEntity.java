@@ -19,12 +19,15 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class BaseEntity {
 
+    /** 엔티티 생성일시 */
     @Column(name = "created_at", nullable = false, updatable = false)
     protected LocalDateTime createdAt;
 
+    /** 엔티티 최종수정일시 */
     @Column(name = "updated_at")
     protected LocalDateTime updatedAt;
 
+    /** 엔티티 생성 시 호출. */
     @PrePersist
     public void prePersist() {
         LocalDateTime now = SeoulDateTime.now();
@@ -32,6 +35,7 @@ public class BaseEntity {
         this.updatedAt = now;
     }
 
+    /** 엔티티 수정 시 호출. */
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = SeoulDateTime.now();
