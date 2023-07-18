@@ -1,5 +1,6 @@
 package com.myfin.api.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ public class VerifyRequestIdentity {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotBlank
         private String phoneNum;
     }
 

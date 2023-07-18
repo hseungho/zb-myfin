@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.CheckIdAvailable;
+import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyRequestIdentity;
 import com.myfin.api.service.UserCheckService;
 import jakarta.validation.Valid;
@@ -27,9 +28,18 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public VerifyRequestIdentity.Response sendPhoneMessageForVerifyingIdentity(
             @RequestBody @Valid VerifyRequestIdentity.Request request) {
+
         return VerifyRequestIdentity.Response.of(
                 userCheckService.sendPhoneMessageForVerifyingIdentity(request.getPhoneNum())
         );
+    }
+
+    @PostMapping("/sign-up/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public VerifyIdentity.Response verifyIdentity(
+            @RequestBody @Valid VerifyIdentity.Request request) {
+
+        return VerifyIdentity.Response.fromDto();
     }
 
 }
