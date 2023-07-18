@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.CheckIdAvailable;
+import com.myfin.api.service.UserCheckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final UserCheckService userCheckService;
+
     @GetMapping("/sign-up/check-id")
     @ResponseStatus(HttpStatus.OK)
     public CheckIdAvailable.Response checkUserIdAvailable(@RequestParam("key") String userId) {
-        return CheckIdAvailable.Response.of();
+        return CheckIdAvailable.Response.of(
+                userCheckService.checkUserIdAvailable(userId)
+        );
     }
 
 }
