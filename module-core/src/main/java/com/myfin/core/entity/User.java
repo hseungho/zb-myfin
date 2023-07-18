@@ -40,7 +40,7 @@ public class User {
 
     /** 유저의 성별. (남: MALE(0), 여: FEMALE(1)) */
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "sex_flag", nullable = false, columnDefinition = "TINYINT(1) NOT NULL")
+    @Column(name = "sex_flag", nullable = false, columnDefinition = "tinyint not null")
     private SexType sex;
 
     /** 유저의 주소 정보 */
