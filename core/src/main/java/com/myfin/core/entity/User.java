@@ -1,5 +1,6 @@
 package com.myfin.core.entity;
 
+import com.myfin.core.type.SexType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
