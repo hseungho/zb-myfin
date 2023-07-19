@@ -48,7 +48,9 @@ public class UserController {
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public SignUp.Response signUp(@RequestBody @Valid SignUp.Request request) {
-        return SignUp.Response.fromDto();
+        return SignUp.Response.fromDto(
+                userSignUpService.signUp(request)
+        );
     }
 
 }

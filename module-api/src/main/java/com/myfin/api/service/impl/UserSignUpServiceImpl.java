@@ -1,12 +1,14 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.adapter.coolsms.SMSMessageComponent;
+import com.myfin.api.dto.SignUp;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyIdentityResultDto;
 import com.myfin.api.service.ATopServiceComponent;
 import com.myfin.api.service.UserSignUpService;
 import com.myfin.cache.entity.CacheVerifyCode;
 import com.myfin.cache.repository.CacheVerifyCodeRepository;
+import com.myfin.core.dto.UserDto;
 import com.myfin.core.exception.impl.BadRequestException;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -91,29 +92,73 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
         return result;
     }
 
+    @Override
+    public UserDto signUp(SignUp.Request request) {
+        validateSignUpRequest(request);
+
+
+
+        return null;
+    }
+
+    private void validateSignUpRequest(SignUp.Request request) {
+        if (hasNotTexts(request.getUserId(), request.getPassword(), request.getUserName(),
+                request.getZipCode(), request.getAddress1(), request.getPhoneNum())
+            || isNull(request.getBirthDate())) {
+            // 회원가입을 위한 필수 정보를 요청하지 않은 경우
+            throw new BadRequestException("회원가입에 필요한 필수 정보를 모두 요청해주세요.");
+        }
+        if (userRepository.existsByUserId(request.getUserId())) {
+            // 회원가입을 위한 유저아이디가 이미 존재하는 경우
+            throw new BadRequestException("이미 존재하는 아이디입니다");
+        }
+        if (isInvalidPassword(request.getUserId(), request.getPassword())) {
+            // 회원가입을 위한 유저패스워드가 올바른 형식이 아닌 경우
+            throw new BadRequestException("비밀번호는 영문자, 숫자, 특수문자를 조합하여 8자리 이상이어야 합니다");
+        }
+        if (isAfterThanNow(request.getBirthDate())) {
+            // 회원가입을 위한 유저생년월일이 오늘보다 이후인 경우
+            throw new BadRequestException("생년월일이 오늘보다 이후일 수는 없습니다");
+        }
+        if (isInvalidPhoneNumPattern(request.getPhoneNum())) {
+            // 회원가입을 위한 휴대폰번호가 올바른 형식이 아닌 경우
+            throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
+        }
+        if (userRepository.existsByPhoneNum(request.getPhoneNum())) {
+            // 회원가입을 위한 휴대폰번호가 이미 존재하는 경우
+            throw new BadRequestException("이미 존재하는 휴대폰번호입니다");
+        }
+        if (hasTexts(request.getEmail()) && isInvalidEmailPattern(request.getEmail())) {
+            // 회원가입을 위한 이메일 주소가 올바른 형식이 아닌 경우
+            throw new BadRequestException("올바른 형식의 이메일주소를 입력해주세요.");
+        }
+    }
+
     private void validateVerifyIdentity(VerifyIdentity.Request request) {
         if (hasNotTexts(request.getPhoneNum(), request.getCode())) {
+            // 본인확인을 위한 휴대폰번호나 인증코드를 요청하지 않은 경우
             throw new BadRequestException("본인확인을 위한 모든 정보를 요청해주세요.");
         }
-        validatePhoneNumberPattern(request.getPhoneNum());
+        if (isInvalidPhoneNumPattern(request.getPhoneNum())) {
+            // 휴대폰번호가 올바른 형식의 휴대폰번호가 아닌 경우
+            throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
+        }
     }
 
     private void validateCheckUserIdAvailableRequest(String userId) {
         if (hasNotTexts(userId)) {
+            // 중복확인을 위한 유저아이디를 요청하지 않은 경우
             throw new BadRequestException("중복확인할 아이디를 입력해주세요.");
         }
     }
 
     private void validateSendPhoneMessageRequest(String phoneNum) {
         if (hasNotTexts(phoneNum)) {
+            // 본인인증 문자요청을 위한 휴대폰번호를 요청하지 않은 경우
             throw new BadRequestException("휴대폰번호를 입력해주세요.");
         }
-        validatePhoneNumberPattern(phoneNum);
-    }
-
-    private void validatePhoneNumberPattern(String phoneNum) {
-        String pattern = "^010[.-]?(\\d{4})[.-]?(\\d{4})$";
-        if (!Pattern.matches(pattern, phoneNum)) {
+        if (isInvalidPhoneNumPattern(phoneNum)) {
+            // 휴대폰번호가 올바른 형식의 휴대폰번호가 아닌 경우
             throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
         }
     }

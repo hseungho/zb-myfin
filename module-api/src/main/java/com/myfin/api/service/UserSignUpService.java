@@ -1,7 +1,9 @@
 package com.myfin.api.service;
 
+import com.myfin.api.dto.SignUp;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyIdentityResultDto;
+import com.myfin.core.dto.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -27,4 +29,11 @@ public interface UserSignUpService {
      * @return 본인인증 검증 DTO 클래스
      */
     VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request);
+
+    /**
+     * 회원가입.
+     * @param request 회원가입 요청 DTO 클래스
+     * @return 유저 DTO 클래스
+     */
+    UserDto signUp(SignUp.Request request);
 }

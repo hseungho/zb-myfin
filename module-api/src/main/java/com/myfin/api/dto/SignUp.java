@@ -4,6 +4,7 @@ import com.myfin.core.dto.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -17,7 +18,10 @@ public class SignUp {
         @NotBlank
         private String userName;
         @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthDate;
+        @NotBlank
+        private String zipCode;
         @NotBlank
         private String address1;
         private String address2;
