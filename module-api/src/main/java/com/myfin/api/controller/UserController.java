@@ -7,6 +7,7 @@ import com.myfin.api.dto.VerifyRequestIdentity;
 import com.myfin.api.service.UserSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ public class UserController {
 
     @GetMapping("/sign-up/check-id")
     @ResponseStatus(HttpStatus.OK)
+    @Cacheable(key = "#userId", value = "checkUserIdResult", cacheManager = "redisCacheManager")
     public CheckIdAvailable.Response checkUserIdAvailable(@RequestParam("key") String userId) {
         return CheckIdAvailable.Response.of(
                 userSignUpService.checkUserIdAvailable(userId)

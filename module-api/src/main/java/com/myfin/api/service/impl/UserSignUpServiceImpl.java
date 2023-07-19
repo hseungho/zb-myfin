@@ -20,6 +20,7 @@ import com.myfin.security.service.EncryptService;
 import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,6 +108,7 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
 
     @Override
     @Transactional
+    @CacheEvict(key = "#{request.getUserId()}", value = "checkUserIdResult", cacheManager = "redisCacheManager")
     public UserDto signUp(SignUp.Request request) {
         // 요청 검증
         validateSignUpRequest(request);
