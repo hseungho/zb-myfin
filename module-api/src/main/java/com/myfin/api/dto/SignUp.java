@@ -20,6 +20,9 @@ public class SignUp {
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthDate;
+        /** 성별. 남자일 경우 false, 여자일 경우 true */
+        @NotNull
+        private Boolean sex;
         @NotBlank
         private String zipCode;
         @NotBlank

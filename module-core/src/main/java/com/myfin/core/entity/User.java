@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ public class User extends BaseEntity {
 
     /** User PK ID */
     @Id
+    @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
+    @GeneratedValue(generator = "uuidGen")
     @Column(name = "id", nullable = false, updatable = false)
     private String id;
 
@@ -63,4 +66,28 @@ public class User extends BaseEntity {
     /** 유저의 삭제일시 */
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public static User create(String userId,
+                              String password,
+                              String name,
+                              LocalDate birthDate,
+                              boolean sex,
+                              String zipCode,
+                              String address1,
+                              String address2,
+                              String phoneNum,
+                              String email
+    ) {
+        return User.builder()
+                .userId(userId)
+                .password(password)
+                .name(name)
+                .birthDate(birthDate)
+                .sex(SexType.of(sex))
+                .userAddress(UserAddressVO.of(zipCode, address1, address2))
+                .phoneNum(phoneNum)
+                .email(email)
+                .build();
+    }
+
 }

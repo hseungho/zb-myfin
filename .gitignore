@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 api-secret.yml
+security-secret.yml
 
 ### STS ###
 .apt_generated

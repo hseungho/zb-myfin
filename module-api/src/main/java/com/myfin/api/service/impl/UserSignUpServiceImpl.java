@@ -6,13 +6,18 @@ import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyIdentityResultDto;
 import com.myfin.api.service.ATopServiceComponent;
 import com.myfin.api.service.UserSignUpService;
+import com.myfin.cache.entity.CacheVerified;
 import com.myfin.cache.entity.CacheVerifyCode;
+import com.myfin.cache.repository.CacheVerifiedRepository;
 import com.myfin.cache.repository.CacheVerifyCodeRepository;
 import com.myfin.core.dto.UserDto;
+import com.myfin.core.entity.User;
 import com.myfin.core.exception.impl.BadRequestException;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
 import com.myfin.core.util.SeoulDateTime;
+import com.myfin.security.service.EncryptService;
+import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +32,11 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
 
     private final UserRepository userRepository;
     private final CacheVerifyCodeRepository cacheVerifyCodeRepository;
+    private final CacheVerifiedRepository cacheVerifiedRepository;
 
     private final SMSMessageComponent smsMessageComponent;
+    private final PasswordEncoderService passwordEncoderService;
+    private final EncryptService encryptService;
 
     @Override
     @Transactional(readOnly = true)
@@ -64,6 +72,7 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
     }
 
     @Override
+    @Transactional
     public VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request) {
         validateVerifyIdentity(request);
 
@@ -78,6 +87,7 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
                                 result.setResult(true);
                                 result.setMessage("인증되었습니다");
                                 cacheVerifyCodeRepository.delete(it);
+                                cacheVerifiedRepository.save(CacheVerified.of(it.getPhoneNum()));
                             } else {
                                 result.setResult(false);
                                 result.setMessage("인증번호가 일치하지 않습니다");
@@ -93,18 +103,45 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
     }
 
     @Override
+    @Transactional
     public UserDto signUp(SignUp.Request request) {
         // 파라미터 검증
         validateSignUpRequest(request);
 
+        // 본인인증 여부 검증
+        validateVerified(request.getPhoneNum());
+
         // 패스워드 암호화
+        request.setPassword(passwordEncoderService.encode(request.getPassword()));
 
         // 휴대폰번호 암호화
+        request.setPhoneNum(encryptService.encrypt(request.getPhoneNum()));
 
-        // User 객체 생성 및 저장
+        //  User 객체 생성 및 저장 -> DTO 반환
+        return UserDto.fromEntity(
+                userRepository.save(
+                        User.create(
+                                request.getUserId(),
+                                request.getPassword(),
+                                request.getUserName(),
+                                request.getBirthDate(),
+                                request.getSex(),
+                                request.getZipCode(),
+                                request.getAddress1(),
+                                request.getAddress2(),
+                                request.getPhoneNum(),
+                                request.getEmail()
+                        )
+                )
+        );
+    }
 
-        // DTO 반환
-        return null;
+    private void validateVerified(String phoneNum) {
+        if (!cacheVerifiedRepository.existsById(phoneNum)) {
+            // 회원가입을 위한 휴대폰번호가 아직 본인인증되지 않은 경우
+            throw new BadRequestException("본인인증되지 않은 휴대폰번호입니다.");
+        }
+        cacheVerifiedRepository.deleteById(phoneNum);
     }
 
     private void validateSignUpRequest(SignUp.Request request) {
