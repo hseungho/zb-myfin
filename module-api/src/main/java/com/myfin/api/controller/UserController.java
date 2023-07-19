@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.CheckIdAvailable;
+import com.myfin.api.dto.SignUp;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyRequestIdentity;
 import com.myfin.api.service.UserCheckService;
@@ -42,6 +43,12 @@ public class UserController {
         return VerifyIdentity.Response.fromDto(
                 userCheckService.verifyIdentity(request)
         );
+    }
+
+    @PostMapping("/sign-up")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SignUp.Response signUp(@RequestBody @Valid SignUp.Request request) {
+        return SignUp.Response.fromDto();
     }
 
 }
