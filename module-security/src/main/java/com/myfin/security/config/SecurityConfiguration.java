@@ -22,11 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private static final String[] permit_all = new String[]{"/**/sign-up/**", "/**/login/**", "/h2-console/**"};
+    private static final String[] PERMIT_ALL = new String[]{"/**/sign-up/**", "/**/login/**", "/h2-console/**"};
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(permit_all);
+        return (web) -> web.ignoring().requestMatchers(PERMIT_ALL);
     }
 
     @Bean
@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(permit_all).permitAll()
+                        request.requestMatchers(PERMIT_ALL).permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
