@@ -24,10 +24,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
-class UserCheckServiceImplUnitTest {
+class UserSignUpServiceImplUnitTest {
 
     @InjectMocks
-    private UserCheckServiceImpl userCheckService;
+    private UserSignUpServiceImpl userCheckService;
     @Mock
     private UserRepository userRepository;
     @Mock

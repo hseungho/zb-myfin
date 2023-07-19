@@ -5,7 +5,7 @@ import com.myfin.api.dto.VerifyIdentityResultDto;
 
 import java.time.LocalDateTime;
 
-public interface UserCheckService {
+public interface UserSignUpService {
 
     /**
      * 아이디 사용가능 여부 확인.

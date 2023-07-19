@@ -4,7 +4,7 @@ import com.myfin.adapter.coolsms.SMSMessageComponent;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyIdentityResultDto;
 import com.myfin.api.service.ATopServiceComponent;
-import com.myfin.api.service.UserCheckService;
+import com.myfin.api.service.UserSignUpService;
 import com.myfin.cache.entity.CacheVerifyCode;
 import com.myfin.cache.repository.CacheVerifyCodeRepository;
 import com.myfin.core.exception.impl.BadRequestException;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserCheckServiceImpl extends ATopServiceComponent implements UserCheckService {
+public class UserSignUpServiceImpl extends ATopServiceComponent implements UserSignUpService {
 
     private final UserRepository userRepository;
     private final CacheVerifyCodeRepository cacheVerifyCodeRepository;

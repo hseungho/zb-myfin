@@ -4,7 +4,7 @@ import com.myfin.api.dto.CheckIdAvailable;
 import com.myfin.api.dto.SignUp;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyRequestIdentity;
-import com.myfin.api.service.UserCheckService;
+import com.myfin.api.service.UserSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserCheckService userCheckService;
+    private final UserSignUpService userSignUpService;
 
     @GetMapping("/sign-up/check-id")
     @ResponseStatus(HttpStatus.OK)
     public CheckIdAvailable.Response checkUserIdAvailable(@RequestParam("key") String userId) {
         return CheckIdAvailable.Response.of(
-                userCheckService.checkUserIdAvailable(userId)
+                userSignUpService.checkUserIdAvailable(userId)
         );
     }
 
@@ -31,7 +31,7 @@ public class UserController {
             @RequestBody @Valid VerifyRequestIdentity.Request request) {
 
         return VerifyRequestIdentity.Response.of(
-                userCheckService.sendPhoneMessageForVerifyingIdentity(request.getPhoneNum())
+                userSignUpService.sendPhoneMessageForVerifyingIdentity(request.getPhoneNum())
         );
     }
 
@@ -41,7 +41,7 @@ public class UserController {
             @RequestBody @Valid VerifyIdentity.Request request) {
 
         return VerifyIdentity.Response.fromDto(
-                userCheckService.verifyIdentity(request)
+                userSignUpService.verifyIdentity(request)
         );
     }
 
