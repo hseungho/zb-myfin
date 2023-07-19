@@ -94,10 +94,16 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
 
     @Override
     public UserDto signUp(SignUp.Request request) {
+        // 파라미터 검증
         validateSignUpRequest(request);
 
+        // 패스워드 암호화
 
+        // 휴대폰번호 암호화
 
+        // User 객체 생성 및 저장
+
+        // DTO 반환
         return null;
     }
 
