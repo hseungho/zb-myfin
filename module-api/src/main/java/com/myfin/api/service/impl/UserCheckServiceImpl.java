@@ -64,7 +64,38 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
 
     @Override
     public VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request) {
-        return null;
+        validateVerifyIdentity(request);
+
+        final String phoneNum = request.getPhoneNum().replace("-", "");
+
+        VerifyIdentityResultDto result = new VerifyIdentityResultDto();
+
+        cacheVerifyCodeRepository.findByPhoneNum(phoneNum)
+                .ifPresentOrElse(
+                        it -> {
+                            if (isMatch(it.getCode(), request.getCode())) {
+                                result.setResult(true);
+                                result.setMessage("인증되었습니다");
+                                cacheVerifyCodeRepository.delete(it);
+                            } else {
+                                result.setResult(false);
+                                result.setMessage("인증번호가 일치하지 않습니다");
+                            }
+                        },
+                        () -> {
+                            result.setResult(false);
+                            result.setMessage("인증번호가 만료되었거나 인증문자를 요청하지 않았습니다. 다시 인증번호를 요청해주세요");
+                        }
+                );
+
+        return result;
+    }
+
+    private void validateVerifyIdentity(VerifyIdentity.Request request) {
+        if (hasNotTexts(request.getPhoneNum(), request.getCode())) {
+            throw new BadRequestException("본인확인을 위한 모든 정보를 요청해주세요.");
+        }
+        validatePhoneNumberPattern(request.getPhoneNum());
     }
 
     private void validateCheckUserIdAvailableRequest(String userId) {
@@ -77,7 +108,11 @@ public class UserCheckServiceImpl extends ATopServiceComponent implements UserCh
         if (hasNotTexts(phoneNum)) {
             throw new BadRequestException("휴대폰번호를 입력해주세요.");
         }
-        String pattern = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$";
+        validatePhoneNumberPattern(phoneNum);
+    }
+
+    private void validatePhoneNumberPattern(String phoneNum) {
+        String pattern = "^010[.-]?(\\d{4})[.-]?(\\d{4})$";
         if (!Pattern.matches(pattern, phoneNum)) {
             throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
         }
