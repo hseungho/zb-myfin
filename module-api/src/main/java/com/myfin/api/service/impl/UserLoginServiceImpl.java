@@ -28,15 +28,20 @@ public class UserLoginServiceImpl extends ATopServiceComponent implements UserLo
     @Override
     @Transactional
     public TokenDto login(String userId, String password) {
+        // 요청 검증
         validateLoginRequest(userId, password);
 
+        // 유저 정보 조회
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다"));
 
+        // 로그인 검증
         validateLoginUser(user, password);
 
+        // 로그인일시 업데이트
         user.login();
 
+        // 토큰 발행 및 응답
         return TokenDto.builder()
                 .accessToken(jwtComponent.generateAccessToken(user.getId(), user.getType()))
                 .refreshToken(jwtComponent.generateRefreshToken(user.getId(), user.getType()))
