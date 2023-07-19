@@ -1,9 +1,6 @@
 package com.myfin.api.controller;
 
-import com.myfin.api.dto.CheckIdAvailable;
-import com.myfin.api.dto.SignUp;
-import com.myfin.api.dto.VerifyIdentity;
-import com.myfin.api.dto.VerifyRequestIdentity;
+import com.myfin.api.dto.*;
 import com.myfin.api.service.UserSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +48,12 @@ public class UserController {
         return SignUp.Response.fromDto(
                 userSignUpService.signUp(request)
         );
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public Login.Response login(@RequestBody @Valid Login.Request request) {
+        return Login.Response.fromDto();
     }
 
 }
