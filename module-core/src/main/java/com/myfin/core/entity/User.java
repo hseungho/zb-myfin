@@ -2,22 +2,28 @@ package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
 import com.myfin.core.type.SexType;
+import com.myfin.core.type.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "users")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     /** User PK ID */
     @Id
@@ -59,6 +65,10 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private UserType type;
+
     /** 유저의 마지막 로그인 일시 */
     @Column(name = "last_logged_in_at")
     private LocalDateTime lastLoggedInAt;
@@ -66,6 +76,9 @@ public class User extends BaseEntity {
     /** 유저의 삭제일시 */
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @Transient
+    private Boolean isOnLoginRequest = false;
 
     public static User create(String userId,
                               String password,
@@ -87,7 +100,47 @@ public class User extends BaseEntity {
                 .userAddress(UserAddressVO.of(zipCode, address1, address2))
                 .phoneNum(phoneNum)
                 .email(email)
+                .type(UserType.ROLE_USER)
                 .build();
+    }
+
+    @Override
+    public void preUpdate() {
+        if (isOnLoginRequest) {
+            isOnLoginRequest = false;
+            return;
+        }
+        super.preUpdate();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(type.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return userId;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }
