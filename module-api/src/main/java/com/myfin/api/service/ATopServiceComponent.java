@@ -140,4 +140,8 @@ public class ATopServiceComponent {
         return !isValidEmailPattern(email);
     }
 
+    protected String convertPhoneNum(String phoneNum) {
+        return phoneNum.strip().replace("-", "");
+    }
+
 }

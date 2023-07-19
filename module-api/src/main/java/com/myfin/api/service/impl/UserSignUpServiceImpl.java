@@ -42,7 +42,6 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
     @Transactional(readOnly = true)
     public boolean checkUserIdAvailable(String userId) {
         validateCheckUserIdAvailableRequest(userId);
-
         return !userRepository.existsByUserId(userId);
     }
 
@@ -52,10 +51,10 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
         // 요청 검증
         validateSendPhoneMessageRequest(requestedPhoneNum);
 
-        final String phoneNum = requestedPhoneNum.replace("-", "");
+        final String phoneNum = convertPhoneNum(requestedPhoneNum);
 
-        // 캐시 저장소에서 휴대폰번호로 조회 후 존재하면 삭제
-        cacheVerifyCodeRepository.findByPhoneNum(phoneNum)
+        // 인증코드 캐시 저장소에서 휴대폰번호로 조회 후 존재하면 삭제
+        cacheVerifyCodeRepository.findById(phoneNum)
                 .ifPresent(cacheVerifyCodeRepository::delete);
 
         // 인증코드 생성
@@ -64,7 +63,7 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
         // 인증문자 발송
         smsMessageComponent.sendMessage(phoneNum, verifyCode);
 
-        // 캐시 저장소 <휴대폰번호, 인증코드> 저장
+        // 인증코드 캐시 저장소에 <휴대폰번호, 인증코드> 저장
         cacheVerifyCodeRepository.save(CacheVerifyCode.of(phoneNum, verifyCode));
 
         // 현재시간 반환
@@ -74,25 +73,29 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
     @Override
     @Transactional
     public VerifyIdentityResultDto verifyIdentity(VerifyIdentity.Request request) {
+        // 요청 검증
         validateVerifyIdentity(request);
-
-        final String phoneNum = request.getPhoneNum().replace("-", "");
 
         VerifyIdentityResultDto result = new VerifyIdentityResultDto();
 
-        cacheVerifyCodeRepository.findByPhoneNum(phoneNum)
+        final String phoneNum = convertPhoneNum(request.getPhoneNum());
+
+        // 인증코드 캐시 저장소에서 휴대폰번호로 조회
+        cacheVerifyCodeRepository.findById(phoneNum)
                 .ifPresentOrElse(
+                        // 인증코드 캐시 저장소에 인증정보가 있을 경우
                         it -> {
                             if (isMatch(it.getCode(), request.getCode())) {
                                 result.setResult(true);
                                 result.setMessage("인증되었습니다");
-                                cacheVerifyCodeRepository.delete(it);
-                                cacheVerifiedRepository.save(CacheVerified.of(it.getPhoneNum()));
+                                cacheVerifyCodeRepository.delete(it);   // 인증코드 캐시 저장소에서 삭제
+                                cacheVerifiedRepository.save(CacheVerified.of(it.getPhoneNum()));   // 인증확인 캐시 저장소에 저장
                             } else {
                                 result.setResult(false);
                                 result.setMessage("인증번호가 일치하지 않습니다");
                             }
                         },
+                        // 캐시 저장소에 인증정보가 없을 경우
                         () -> {
                             result.setResult(false);
                             result.setMessage("인증번호가 만료되었거나 인증문자를 요청하지 않았습니다. 다시 인증번호를 요청해주세요");
@@ -105,17 +108,18 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
     @Override
     @Transactional
     public UserDto signUp(SignUp.Request request) {
-        // 파라미터 검증
+        // 요청 검증
         validateSignUpRequest(request);
 
         // 본인인증 여부 검증
-        validateVerified(request.getPhoneNum());
+        final String phoneNum = convertPhoneNum(request.getPhoneNum());
+        validateVerified(phoneNum);
 
         // 패스워드 암호화
         request.setPassword(passwordEncoderService.encode(request.getPassword()));
 
         // 휴대폰번호 암호화
-        request.setPhoneNum(encryptService.encrypt(request.getPhoneNum()));
+        request.setPhoneNum(encryptService.encrypt(phoneNum));
 
         //  User 객체 생성 및 저장 -> DTO 반환
         return UserDto.fromEntity(

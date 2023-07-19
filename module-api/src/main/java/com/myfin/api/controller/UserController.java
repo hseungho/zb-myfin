@@ -29,7 +29,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public VerifyRequestIdentity.Response sendPhoneMessageForVerifyingIdentity(
             @RequestBody @Valid VerifyRequestIdentity.Request request) {
-
         return VerifyRequestIdentity.Response.of(
                 userSignUpService.sendPhoneMessageForVerifyingIdentity(request.getPhoneNum())
         );
@@ -39,7 +38,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public VerifyIdentity.Response verifyIdentity(
             @RequestBody @Valid VerifyIdentity.Request request) {
-
         return VerifyIdentity.Response.fromDto(
                 userSignUpService.verifyIdentity(request)
         );

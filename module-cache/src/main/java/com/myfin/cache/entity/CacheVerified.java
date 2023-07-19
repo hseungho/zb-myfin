@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 import java.util.Objects;
 
 @Getter
-@RedisHash(value = "Verified", timeToLive = 600L) // TTL: 10분
+@RedisHash(value = "Verified", timeToLive = 86400L) // TTL: 1일
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
 public class CacheVerified {

@@ -101,7 +101,7 @@ class UserSignUpServiceImplUnitTest {
     @DisplayName("휴대폰 본인인증 문자요청")
     void test_sendPhoneMessageForVerifyingIdentity_success() {
         // given
-        given(cacheVerifyCodeRepository.findByPhoneNum(anyString()))
+        given(cacheVerifyCodeRepository.findById(anyString()))
                 .willReturn(Optional.empty());
         doNothing().when(smsMessageComponent).sendMessage(anyString(), anyString());
         given(cacheVerifyCodeRepository.save(any()))
@@ -180,7 +180,7 @@ class UserSignUpServiceImplUnitTest {
     @DisplayName("휴대폰 본인인증 검증")
     void test_verifyIdentity() {
         // given
-        given(cacheVerifyCodeRepository.findByPhoneNum(anyString()))
+        given(cacheVerifyCodeRepository.findById(anyString()))
                 .willReturn(Optional.of(
                         CacheVerifyCode.of("01012341234", "123456")
                 ));
@@ -197,7 +197,7 @@ class UserSignUpServiceImplUnitTest {
     @DisplayName("휴대폰 본인인증 검증 - 실패 - 코드 불일치")
     void test_verifyIdentity_code_will_be_wrong() {
         // given
-        given(cacheVerifyCodeRepository.findByPhoneNum(anyString()))
+        given(cacheVerifyCodeRepository.findById(anyString()))
                 .willReturn(Optional.of(
                         CacheVerifyCode.of("01012341234", "654321")
                 ));
@@ -214,7 +214,7 @@ class UserSignUpServiceImplUnitTest {
     @DisplayName("휴대폰 본인인증 검증 - 실패 - 코드 만료")
     void test_verifyIdentity_code_will_be_expired() {
         // given
-        given(cacheVerifyCodeRepository.findByPhoneNum(anyString()))
+        given(cacheVerifyCodeRepository.findById(anyString()))
                 .willReturn(Optional.empty());
         // when
         VerifyIdentityResultDto result = userSignUpService.verifyIdentity(VerifyIdentity.Request.builder()
