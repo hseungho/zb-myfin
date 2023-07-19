@@ -48,7 +48,7 @@ public class User extends BaseEntity {
     @Embedded
     private UserAddressVO userAddress;
 
-    /** 유저의 휴대폰번호 */
+    /** 유저의 휴대폰번호 (encrypted) */
     @Column(name = "phone_num", nullable = false, unique = true)
     private String phoneNum;
 
