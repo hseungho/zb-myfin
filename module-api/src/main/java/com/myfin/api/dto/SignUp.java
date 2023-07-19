@@ -1,11 +1,9 @@
 package com.myfin.api.dto;
 
+import com.myfin.core.dto.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -28,10 +26,19 @@ public class SignUp {
         private String email;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response {
+    public static class Response extends ATopResponse {
         private String userId;
         private String userName;
         private String createdAt;
+
+        public static Response fromDto(UserDto dto) {
+            return Response.builder()
+                    .userId(dto.getUserId())
+                    .userName(dto.getName())
+                    .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                    .build();
+        }
     }
 }
