@@ -3,6 +3,7 @@ package com.myfin.core.entity;
 import com.myfin.core.BaseEntity;
 import com.myfin.core.type.SexType;
 import com.myfin.core.type.UserType;
+import com.myfin.core.util.SeoulDateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class User extends BaseEntity implements UserDetails {
     private String id;
 
     /** 유저 아이디 */
-    @Column(name = "user_id", nullable = false, updatable = false, unique = true)
+    @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
     /** 유저 패스워드 */
@@ -143,4 +144,12 @@ public class User extends BaseEntity implements UserDetails {
         return true;
     }
 
+    public boolean isResigned() {
+        return deletedAt != null || type == UserType.RESIGNED;
+    }
+
+    public void login() {
+        this.lastLoggedInAt = SeoulDateTime.now();
+        isOnLoginRequest = true;
+    }
 }

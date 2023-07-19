@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.*;
+import com.myfin.api.service.UserLoginService;
 import com.myfin.api.service.UserSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserSignUpService userSignUpService;
+    private final UserLoginService userLoginService;
 
     @GetMapping("/sign-up/check-id")
     @ResponseStatus(HttpStatus.OK)
@@ -53,7 +55,9 @@ public class UserController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public Login.Response login(@RequestBody @Valid Login.Request request) {
-        return Login.Response.fromDto();
+        return Login.Response.fromDto(
+                userLoginService.login(request.getUserId(), request.getPassword())
+        );
     }
 
 }
