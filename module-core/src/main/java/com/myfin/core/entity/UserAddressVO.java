@@ -25,7 +25,7 @@ public class UserAddressVO {
     @Column(name = "address_2")
     private String address2;
 
-    static UserAddressVO of(String zipCode, String address1, String address2) {
+    public static UserAddressVO of(String zipCode, String address1, String address2) {
         return new UserAddressVO(zipCode, address1, address2);
     }
 
