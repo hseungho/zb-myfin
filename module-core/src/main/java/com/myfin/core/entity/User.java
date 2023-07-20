@@ -30,7 +30,7 @@ public class User extends BaseEntity implements UserDetails {
     @Id
     @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
     @GeneratedValue(generator = "uuidGen")
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private String id;
 
     /** 유저 아이디 */
