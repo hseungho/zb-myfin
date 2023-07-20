@@ -1,4 +1,4 @@
-package com.myfin.api.controller;
+package com.myfin.api.config;
 
 import com.myfin.core.AbstractRestApiException;
 import com.myfin.core.exception.ErrorResponse;
