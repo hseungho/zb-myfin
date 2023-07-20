@@ -1,6 +1,7 @@
 package com.myfin.api.dto;
 
 import com.myfin.core.dto.UserDto;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -14,6 +15,7 @@ public class SignUp {
         @NotBlank(message = "아이디를 입력해주세요")
         private String userId;
         @NotBlank(message = "패스워드를 입력해주세요")
+        @Min(value = 8, message = "패스워드는 8자리 이상으로 입력해주세요")
         private String password;
         @NotBlank(message = "성명을 입력해주세요")
         private String userName;
