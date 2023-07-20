@@ -15,7 +15,7 @@ public class VerifyRequestIdentity {
     @AllArgsConstructor
     @Builder
     public static class Request {
-        @NotBlank
+        @NotBlank(message = "휴대폰번호를 입력해주세요")
         private String phoneNum;
     }
 

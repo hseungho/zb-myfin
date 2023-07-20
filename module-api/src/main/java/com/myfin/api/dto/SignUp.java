@@ -11,24 +11,24 @@ import java.time.LocalDate;
 public class SignUp {
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
     public static class Request {
-        @NotBlank
+        @NotBlank(message = "아이디를 입력해주세요")
         private String userId;
-        @NotBlank
+        @NotBlank(message = "패스워드를 입력해주세요")
         private String password;
-        @NotBlank
+        @NotBlank(message = "성명을 입력해주세요")
         private String userName;
-        @NotNull
+        @NotNull(message = "생년월일을 입력해주세요")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthDate;
         /** 성별. 남자일 경우 false, 여자일 경우 true */
-        @NotNull
+        @NotNull(message = "성별을 선택해주세요")
         private Boolean sex;
-        @NotBlank
+        @NotBlank(message = "우편번호를 입력해주세요")
         private String zipCode;
-        @NotBlank
+        @NotBlank(message = "도로명주소를 입력해주세요")
         private String address1;
         private String address2;
-        @NotBlank
+        @NotBlank(message = "휴대폰번호를 입력해주세요")
         private String phoneNum;
         private String email;
     }
