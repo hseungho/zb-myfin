@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 public class VerifyIdentity {
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
     public static class Request {
-        @NotBlank
+        @NotBlank(message = "휴대폰번호를 입력해주세요")
         private String phoneNum;
-        @NotBlank
+        @NotBlank(message = "인증코드를 입력해주세요")
         private String code;
     }
 

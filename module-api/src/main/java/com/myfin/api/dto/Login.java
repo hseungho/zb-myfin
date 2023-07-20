@@ -6,9 +6,9 @@ import lombok.*;
 public class Login {
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
     public static class Request {
-        @NotBlank
+        @NotBlank(message = "아이디를 입력해주세요")
         private String userId;
-        @NotBlank
+        @NotBlank(message = "패스워드를 입력해주세요")
         private String password;
     }
 

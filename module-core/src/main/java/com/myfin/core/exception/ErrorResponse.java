@@ -3,6 +3,7 @@ package com.myfin.core.exception;
 import com.myfin.core.AbstractRestApiException;
 import com.myfin.core.util.SeoulDateTime;
 import lombok.*;
+import org.springframework.http.HttpStatusCode;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,6 +21,15 @@ public class ErrorResponse {
                 .timestamp(SeoulDateTime.now().toString())
                 .httpStatus(ex.getHttpStatus())
                 .errorMessage(ex.getErrorMessage())
+                .path(path)
+                .build();
+    }
+
+    public static ErrorResponse errorResponse(HttpStatusCode statusCode, String message, String path) {
+        return ErrorResponse.builder()
+                .timestamp(SeoulDateTime.now().toString())
+                .httpStatus(statusCode.value())
+                .errorMessage(message)
                 .path(path)
                 .build();
     }

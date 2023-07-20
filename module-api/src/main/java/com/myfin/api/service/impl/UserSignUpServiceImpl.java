@@ -108,7 +108,7 @@ public class UserSignUpServiceImpl extends ATopServiceComponent implements UserS
 
     @Override
     @Transactional
-    @CacheEvict(key = "#{request.getUserId()}", value = "checkUserIdResult", cacheManager = "redisCacheManager")
+    @CacheEvict(key = "#request.userId", value = "checkUserIdResult", cacheManager = "redisCacheManager")
     public UserDto signUp(SignUp.Request request) {
         // 요청 검증
         validateSignUpRequest(request);
