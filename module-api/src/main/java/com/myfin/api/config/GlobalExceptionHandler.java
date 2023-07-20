@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class RestApiExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(AbstractRestApiException.class)
     public ResponseEntity<ErrorResponse> handleRestException(AbstractRestApiException ex, HttpServletRequest request) {
