@@ -1,6 +1,5 @@
 package com.myfin.security.jwt;
 
-import com.myfin.core.type.UserType;
 import com.myfin.security.service.UserAuthenticationComponent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -45,7 +44,7 @@ public class JwtComponent {
      * @param type 해당 유저의 UserType
      * @return 생성된 JWT 액세스 토큰
      */
-    public String generateAccessToken(String id, UserType type) {
+    public String generateAccessToken(String id, String type) {
         return TOKEN_PREFIX + generateToken(id, type, ACCESS_TOKEN_EXPIRED_TIME);
     }
 
@@ -55,7 +54,7 @@ public class JwtComponent {
      * @param type 해당 유저의 UserType
      * @return 생성된 JWT 리프레시 토큰
      */
-    public String generateRefreshToken(String id, UserType type) {
+    public String generateRefreshToken(String id, String type) {
         return TOKEN_PREFIX + generateToken(id, type, REFRESH_TOKEN_EXPIRED_TIME);
     }
 
@@ -66,9 +65,9 @@ public class JwtComponent {
      * @param expired 토큰의 만료시간
      * @return 생성된 JWT 토큰
      */
-    private String generateToken(String id, UserType type, long expired) {
+    private String generateToken(String id, String type, long expired) {
         Claims claims = Jwts.claims().setSubject(id);
-        claims.put(CLAIMS_ROLE, type.name());
+        claims.put(CLAIMS_ROLE, type);
 
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + expired);

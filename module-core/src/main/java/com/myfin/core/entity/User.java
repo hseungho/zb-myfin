@@ -1,6 +1,7 @@
 package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
+import com.myfin.core.config.EncryptConverter;
 import com.myfin.core.type.SexType;
 import com.myfin.core.type.UserType;
 import com.myfin.core.util.SeoulDateTime;
@@ -60,6 +61,7 @@ public class User extends BaseEntity implements UserDetails {
 
     /** 유저의 휴대폰번호 (encrypted) */
     @Column(name = "phone_num", nullable = false, unique = true)
+    @Convert(converter = EncryptConverter.class)
     private String phoneNum;
 
     /** 유저의 이메일 주소 */

@@ -22,6 +22,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':module-security')
+
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     runtimeOnly 'com.h2database:h2'
 }

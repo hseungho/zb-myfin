@@ -43,8 +43,8 @@ public class UserLoginServiceImpl extends ATopServiceComponent implements UserLo
 
         // 토큰 발행 및 응답
         return TokenDto.builder()
-                .accessToken(jwtComponent.generateAccessToken(user.getId(), user.getType()))
-                .refreshToken(jwtComponent.generateRefreshToken(user.getId(), user.getType()))
+                .accessToken(jwtComponent.generateAccessToken(user.getId(), user.getType().name()))
+                .refreshToken(jwtComponent.generateRefreshToken(user.getId(), user.getType().name()))
                 .lastLoggedInAt(user.getLastLoggedInAt())
                 .build();
     }

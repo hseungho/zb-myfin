@@ -14,7 +14,7 @@ public class AccountController {
     @PostMapping("/accounts")
     @ResponseStatus(HttpStatus.CREATED)
     public CreateAccount.Response createAccount(@RequestBody @Valid CreateAccount.Request request) {
-        return CreateAccount.Response.fromDto();
+        return CreateAccount.Response.fromDto(null);
     }
 
 }

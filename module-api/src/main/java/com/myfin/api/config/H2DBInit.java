@@ -45,7 +45,7 @@ public class H2DBInit {
                     zip_code,
                     address_1,
                     address_2,
-                    encryptService.encrypt(phone_num),
+                    phone_num,
                     email
             );
             userRepository.save(user);

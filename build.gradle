@@ -65,9 +65,9 @@ project(':module-adapter') {
     }
 }
 
-project(':module-security') {
+project(':module-core') {
     dependencies {
-        compileOnly project(':module-core')
+        compileOnly project(':module-security')
     }
 }
 
