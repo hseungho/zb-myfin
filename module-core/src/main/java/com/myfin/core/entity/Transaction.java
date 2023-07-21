@@ -1,5 +1,6 @@
 package com.myfin.core.entity;
 
+import com.myfin.core.config.EncryptConverter;
 import com.myfin.core.type.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Transaction {
     private Long id;
 
     @Column(name = "txn_no", nullable = false, unique = true)
+    @Convert(converter = EncryptConverter.class)
     private String number;
 
     @Column(name = "amount", nullable = false)
@@ -31,6 +33,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(name = "rct_act_no")
+    @Convert(converter = EncryptConverter.class)
     private String recipientAccountNumber;
 
     @Column(name = "traded_at", nullable = false)

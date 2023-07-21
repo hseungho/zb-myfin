@@ -1,6 +1,7 @@
 package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
+import com.myfin.core.config.EncryptConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Account extends BaseEntity {
 
     /** 계좌번호 */
     @Column(name = "act_no", nullable = false, unique = true)
+    @Convert(converter = EncryptConverter.class)
     private String number;
 
     /** 계좌 비밀번호 */
