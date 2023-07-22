@@ -1,6 +1,5 @@
 package com.myfin.security.jwt;
 
-import com.myfin.security.service.UserAuthenticationComponent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,9 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -35,8 +31,6 @@ public class JwtComponent {
 
     @Value("${jwt.secret}")
     private String secretKey;
-
-    private final UserAuthenticationComponent userAuthenticationComponent;
 
     /**
      * 해당 유저에 대한 액세스 토큰을 생성하는 메소드.
@@ -90,17 +84,6 @@ public class JwtComponent {
 
         var claims = this.parseClaims(token);
         return !claims.getExpiration().before(new Date());
-    }
-
-    /**
-     * 토큰 Payload 에 담겨있는 유저 PK ID를 이용하여 DB를 조회한 뒤, <br>
-     * UsernamePasswordAuthenticationToken 을 반환하는 메소드.
-     * @param token 토큰 값
-     * @return UsernamePasswordAuthenticationToken 로 객체화한 Authentication 인터페이스
-     */
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userAuthenticationComponent.loadUserByUsername(this.getId(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     /**

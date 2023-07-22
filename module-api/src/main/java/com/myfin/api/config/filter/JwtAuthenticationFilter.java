@@ -1,5 +1,7 @@
-package com.myfin.security.jwt;
+package com.myfin.api.config.filter;
 
+import com.myfin.api.service.UserAuthenticationService;
+import com.myfin.security.jwt.JwtComponent;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import static com.myfin.security.jwt.JwtComponent.TOKEN_HEADER;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtComponent jwtComponent;
+    private final UserAuthenticationService userAuthenticationService;
 
     /**
      * JWT 토큰을 파싱하여 검증하는 메소드. <br>
@@ -43,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = this.resolveTokenFromRequest(request);
 
         if (StringUtils.hasText(token) && jwtComponent.validateToken(token)) {
-            Authentication authentication = this.jwtComponent.getAuthentication(token);
+            Authentication authentication = userAuthenticationService.getAuthentication(jwtComponent.getId(token));
 
 //            if (((User) authentication.getPrincipal()).isResigned()) { // JWT 토큰 유저가 탈퇴된 유저인지 확인
 //                throw new UnauthorizedException(ErrorCodeType.UNAUTHORIZED_LOGIN_ALREADY_RESIGNED_USER);

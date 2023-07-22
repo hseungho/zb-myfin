@@ -1,7 +1,7 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.TokenDto;
-import com.myfin.api.service.ATopServiceComponent;
+import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.UserLoginService;
 import com.myfin.core.entity.User;
 import com.myfin.core.exception.impl.BadRequestException;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserLoginServiceImpl extends ATopServiceComponent implements UserLoginService {
+public class UserLoginServiceImpl extends TopServiceComponent implements UserLoginService {
 
     private final UserRepository userRepository;
 
