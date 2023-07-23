@@ -1,4 +1,4 @@
-package com.myfin.api.config.filter;
+package com.myfin.api.config.security.filter;
 
 import com.myfin.api.service.UserAuthenticationService;
 import com.myfin.security.jwt.JwtComponent;

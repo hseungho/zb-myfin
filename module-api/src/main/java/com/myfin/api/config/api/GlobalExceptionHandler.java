@@ -1,4 +1,4 @@
-package com.myfin.api.config;
+package com.myfin.api.config.api;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.myfin.core.AbstractRestApiException;

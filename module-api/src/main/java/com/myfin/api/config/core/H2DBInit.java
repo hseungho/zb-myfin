@@ -1,4 +1,4 @@
-package com.myfin.api.config;
+package com.myfin.api.config.core;
 
 import com.myfin.core.entity.User;
 import com.myfin.core.repository.UserRepository;
