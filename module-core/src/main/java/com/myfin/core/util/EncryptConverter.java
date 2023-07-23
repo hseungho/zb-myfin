@@ -1,4 +1,4 @@
-package com.myfin.core.config;
+package com.myfin.core.util;
 
 import com.myfin.security.service.EncryptService;
 import jakarta.persistence.AttributeConverter;

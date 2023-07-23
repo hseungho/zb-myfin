@@ -1,4 +1,4 @@
-package com.myfin.security.config;
+package com.myfin.api.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

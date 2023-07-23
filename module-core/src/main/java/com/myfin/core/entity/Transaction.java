@@ -1,6 +1,6 @@
 package com.myfin.core.entity;
 
-import com.myfin.core.config.EncryptConverter;
+import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.type.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
-import com.myfin.core.config.EncryptConverter;
+import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.type.SexType;
 import com.myfin.core.type.UserType;
 import com.myfin.core.util.SeoulDateTime;

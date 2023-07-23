@@ -1,7 +1,7 @@
 package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
-import com.myfin.core.config.EncryptConverter;
+import com.myfin.core.util.EncryptConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
