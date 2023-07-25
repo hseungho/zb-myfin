@@ -41,9 +41,17 @@ public class Account extends BaseEntity {
     private LocalDateTime deletedAt;
 
     /** 계좌 소유자 */
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User owner;
 
+    public static Account create(String number, String encryptedPassword, Long balance, User owner) {
+        return Account.builder()
+                .number(number)
+                .password(encryptedPassword)
+                .balance(balance)
+                .owner(owner)
+                .build();
+    }
 }
 
