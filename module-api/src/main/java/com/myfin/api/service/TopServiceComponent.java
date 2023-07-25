@@ -68,6 +68,16 @@ public class TopServiceComponent {
     }
 
     /**
+     * 두 파라미터가 불일치하는지 확인.
+     * @param o1 확인할 파라미터 1
+     * @param o2 확인할 파라미터 2
+     * @return 두 파라미터가 불일치하면 true
+     */
+    protected boolean isNonMatch(Object o1, Object o2) {
+        return !isMatch(o1, o2);
+    }
+
+    /**
      * 올바른 형식의 휴대폰번호인지 확인.
      * @param phoneNum 확인할 휴대폰번호
      * @return 올바른 형식이라면 true
@@ -219,7 +229,7 @@ public class TopServiceComponent {
      * 로그인 유저의 PK ID를 반환.
      * @return 로그인 유저의 PK ID
      */
-    private String loginUserId() {
+    protected String loginUserId() {
         return ((User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getUserId();
     }
 

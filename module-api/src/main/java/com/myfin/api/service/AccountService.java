@@ -1,6 +1,7 @@
 package com.myfin.api.service;
 
 import com.myfin.api.dto.CreateAccount;
+import com.myfin.api.dto.DeleteAccount;
 import com.myfin.core.dto.AccountDto;
 
 public interface AccountService {
@@ -12,4 +13,10 @@ public interface AccountService {
      */
     AccountDto createAccount(CreateAccount.Request request);
 
+    /**
+     * 계좌 삭제.
+     * @param request 계좌 삭제 요청 DTO 클래스
+     * @return 계좌 DTO 클래스
+     */
+    AccountDto deleteAccount(DeleteAccount.Request request);
 }

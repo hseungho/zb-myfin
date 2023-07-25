@@ -2,6 +2,7 @@ package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
 import com.myfin.core.util.EncryptConverter;
+import com.myfin.core.util.SeoulDateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,14 @@ public class Account extends BaseEntity {
                 .balance(balance)
                 .owner(owner)
                 .build();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public void delete() {
+        this.deletedAt = SeoulDateTime.now();
     }
 }
 

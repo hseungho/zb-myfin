@@ -26,7 +26,9 @@ public class AccountController {
     @DeleteMapping("/accounts")
     @ResponseStatus(HttpStatus.OK)
     public DeleteAccount.Response deleteAccount(@RequestBody @Valid DeleteAccount.Request request) {
-        return DeleteAccount.Response.fromDto();
+        return DeleteAccount.Response.fromDto(
+                accountService.deleteAccount(request)
+        );
     }
 
 }

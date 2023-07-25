@@ -80,6 +80,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @OneToOne(mappedBy = "owner")
+    private Account account;
+
     @Transient
     private Boolean isOnLoginRequest = false;
 
