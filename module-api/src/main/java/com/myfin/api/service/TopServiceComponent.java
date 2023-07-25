@@ -149,7 +149,7 @@ public class TopServiceComponent {
     protected boolean isInvalidAccountPassword(String password) {
         if (password.length() != 4)
             return true;
-        if (!isNaN(password))
+        if (isNaN(password))
             return true;
         if (isExistDuplicateNumbersInRow(password))
             return true;
@@ -179,7 +179,6 @@ public class TopServiceComponent {
      * @return 올바른 숫자라면 true
      */
     protected boolean isNaN(String number) {
-        boolean flag = true;
         if (number == null || "".equals(number))
             return false;
 
@@ -191,12 +190,11 @@ public class TopServiceComponent {
 
         for (int i=st_no; i<size; ++i) {
             if (!(48<=((int)number.charAt(i)) && 57>=((int)number.charAt(i)))) {
-                flag = false;
-                break;
+                return true;
             }
         }
 
-        return flag;
+        return false;
     }
 
     /**
