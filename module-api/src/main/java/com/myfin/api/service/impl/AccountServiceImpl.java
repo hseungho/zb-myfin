@@ -42,9 +42,8 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
                         Account.create(
                                 generateAccountNumber(),
                                 passwordEncoderService.encode(request.getAccountPassword()),
-                                request.getInitialBalance(),
-                                loginUser()
-                        )
+                                request.getInitialBalance()
+                        ).associate(loginUser())
                 )
         );
     }

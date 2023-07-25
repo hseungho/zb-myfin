@@ -1,13 +1,18 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.CreateAccount;
+import com.myfin.api.dto.DeleteAccount;
+import com.myfin.api.mock.MockFactory;
 import com.myfin.api.mock.TestSecurityHolder;
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.entity.Account;
 import com.myfin.core.entity.User;
 import com.myfin.core.exception.impl.BadRequestException;
+import com.myfin.core.exception.impl.ForbiddenException;
 import com.myfin.core.exception.impl.InternalServerException;
+import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.repository.AccountRepository;
+import com.myfin.core.repository.UserRepository;
 import com.myfin.core.type.UserType;
 import com.myfin.core.util.SeoulDateTime;
 import com.myfin.security.service.PasswordEncoderService;
@@ -20,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,13 +38,15 @@ class AccountServiceImplUnitTest {
 
     @Mock private AccountRepository accountRepository;
 
+    @Mock private UserRepository userRepository;
+
     @Mock private PasswordEncoderService passwordEncoderService;
 
     @Test
     @DisplayName("계좌 생성 - 성공")
     void test_createAccount() {
         // given
-        User user = TestSecurityHolder.setSecurityHolderUser(UserType.ROLE_USER);
+        User user = TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
         LocalDateTime now = SeoulDateTime.now();
 
         given(accountRepository.existsByOwner(any()))
@@ -135,7 +143,7 @@ class AccountServiceImplUnitTest {
     @DisplayName("계좌 생성 - 실패 - 유저 계좌 이미 보유")
     void test_createAccount_failed_when_user_has_account() {
         // given
-        TestSecurityHolder.setSecurityHolderUser(UserType.ROLE_USER);
+        TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
         given(accountRepository.existsByOwner(any()))
                 .willReturn(true);
         // when
@@ -153,7 +161,7 @@ class AccountServiceImplUnitTest {
     @DisplayName("계좌 생성 - 실패 - 계좌번호 생성 실패")
     void test_createAccount_failed_when_fail_accountNumber_generating() {
         // given
-        TestSecurityHolder.setSecurityHolderUser(UserType.ROLE_USER);
+        TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
         given(accountRepository.existsByOwner(any()))
                 .willReturn(false);
         given(accountRepository.existsByNumber(anyString()))
@@ -169,4 +177,142 @@ class AccountServiceImplUnitTest {
         Assertions.assertEquals("계좌번호 생성에 문제가 발생하였습니다. 관리자에게 문의해주세요", ex.getErrorMessage());
     }
 
+    @Test
+    @DisplayName("계좌 삭제 - 성공")
+    void test_deleteAccount_success() {
+        // given
+        LocalDateTime now = SeoulDateTime.now();
+
+        User user = TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
+        MockFactory.mock_account(user, 0L, now, null, null);
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        given(passwordEncoderService.mismatch(anyString(), anyString()))
+                .willReturn(false);
+        // when
+        AccountDto result = accountService.deleteAccount(DeleteAccount.Request.builder()
+                .accountNumber("account_number")
+                .accountPassword("1234").build());
+        // then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("account_number", result.getNumber());
+        Assertions.assertEquals(now, result.getCreatedAt());
+        Assertions.assertNotNull(result.getDeletedAt());
+    }
+
+    @Test
+    @DisplayName("계좌 삭제 - 실패 - 계좌번호 및 계좌비밀번호 미입력")
+    void test_deleteAccount_failed_when_accountNumber_and_accountPassword_null() {
+        // given
+        User user = TestSecurityHolder.setSecurityHolderUser(
+                MockFactory.mock_user(UserType.ROLE_USER, null, null, null)
+        );
+        MockFactory.mock_account(user, 0L, null, null, null);
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        // when
+        BadRequestException ex_nmb_null = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountPassword("1234").build())
+        );
+        BadRequestException ex_pw_null = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountNumber("account_number").build())
+        );
+        // then
+        Assertions.assertEquals(400, ex_nmb_null.getHttpStatus());
+        Assertions.assertEquals(400, ex_pw_null.getHttpStatus());
+        Assertions.assertEquals("계좌번호와 계좌비밀번호 모두 입력해주세요", ex_nmb_null.getErrorMessage());
+        Assertions.assertEquals("계좌번호와 계좌비밀번호 모두 입력해주세요", ex_pw_null.getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("계좌 삭제 - 실패 - 계좌번호 불일치")
+    void test_deleteAccount_failed_when_mismatch_accountNumber() {
+        // given
+        User user = TestSecurityHolder.setSecurityHolderUser(
+                MockFactory.mock_user(UserType.ROLE_USER, null, null, null)
+        );
+        MockFactory.mock_account(user, 0L, null, null, null);
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        // when
+        ForbiddenException ex = Assertions.assertThrows(
+                ForbiddenException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountNumber("wrong_account_number").accountPassword("1234").build())
+        );
+        // then
+        Assertions.assertEquals(403, ex.getHttpStatus());
+        Assertions.assertEquals("해당 계좌번호는 유저님의 계좌번호가 아닙니다", ex.getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("계좌 삭제 - 실패 - 이미 삭제된 계좌")
+    void test_deleteAccount_failed_when_already_deleted_account() {
+        // given
+        User user = TestSecurityHolder.setSecurityHolderUser(
+                MockFactory.mock_user(UserType.ROLE_USER, null, null, null)
+        );
+        MockFactory.mock_account(user, 0L, null, null, SeoulDateTime.now());
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        // when
+        NotFoundException ex = Assertions.assertThrows(
+                NotFoundException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountNumber("account_number").accountPassword("1234").build())
+        );
+        // then
+        Assertions.assertEquals(404, ex.getHttpStatus());
+        Assertions.assertEquals("이미 삭제된 계좌입니다", ex.getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("계좌 삭제 - 실패 - 계좌비밀번호 불일치")
+    void test_deleteAccount_failed_when_mismatch_accountPassword() {
+        // given
+        User user = TestSecurityHolder.setSecurityHolderUser(
+                MockFactory.mock_user(UserType.ROLE_USER, null, null, null)
+        );
+        MockFactory.mock_account(user, 0L, null, null, null);
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        given(passwordEncoderService.mismatch(anyString(), anyString()))
+                .willReturn(true);
+        // when
+        ForbiddenException ex = Assertions.assertThrows(
+                ForbiddenException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountNumber("account_number").accountPassword("4321").build())
+        );
+        // then
+        Assertions.assertEquals(403, ex.getHttpStatus());
+        Assertions.assertEquals("계좌비밀번호가 일치하지 않습니다", ex.getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("계좌 삭제 - 실패 - 계좌 잔액 보유")
+    void test_deleteAccount_failed_when_balance_existed() {
+        // given
+        User user = TestSecurityHolder.setSecurityHolderUser(
+                MockFactory.mock_user(UserType.ROLE_USER, null, null, null)
+        );
+        MockFactory.mock_account(user, 10000L, null, null, null);
+        given(userRepository.findById(any()))
+                .willReturn(Optional.of(user));
+        given(passwordEncoderService.mismatch(anyString(), anyString()))
+                .willReturn(false);
+        // when
+        BadRequestException ex = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> accountService.deleteAccount(DeleteAccount.Request.builder()
+                        .accountNumber("account_number").accountPassword("1234").build())
+        );
+        // then
+        Assertions.assertEquals(400, ex.getHttpStatus());
+        Assertions.assertEquals("계좌에 잔액이 존재한 경우에는 계좌를 삭제할 수 없습니다", ex.getErrorMessage());
+    }
 }

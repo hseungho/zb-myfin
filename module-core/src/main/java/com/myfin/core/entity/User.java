@@ -157,4 +157,8 @@ public class User extends BaseEntity implements UserDetails {
         this.lastLoggedInAt = SeoulDateTime.now();
         isOnLoginRequest = true;
     }
+
+    public void associate(Account account) {
+        this.account = account;
+    }
 }

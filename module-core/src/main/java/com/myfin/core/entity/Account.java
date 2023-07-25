@@ -46,13 +46,18 @@ public class Account extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    public static Account create(String number, String encryptedPassword, Long balance, User owner) {
+    public static Account create(String number, String encryptedPassword, Long balance) {
         return Account.builder()
                 .number(number)
                 .password(encryptedPassword)
                 .balance(balance)
-                .owner(owner)
                 .build();
+    }
+
+    public Account associate(User owner) {
+        this.owner = owner;
+        owner.associate(this);
+        return this;
     }
 
     public boolean isDeleted() {
