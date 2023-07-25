@@ -42,7 +42,7 @@ public class Account extends BaseEntity {
     private LocalDateTime deletedAt;
 
     /** 계좌 소유자 */
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User owner;
 

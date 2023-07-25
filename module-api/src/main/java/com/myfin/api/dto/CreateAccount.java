@@ -12,7 +12,7 @@ public class CreateAccount {
         @NotNull(message = "계좌비밀번호를 입력해주세요")
         @NotBlank(message = "계좌비밀번호를 입력해주세요")
         private String accountPassword;
-        private Long initialBalance;
+        private Long initialBalance = 0L;
     }
 
     @EqualsAndHashCode(callSuper = true)

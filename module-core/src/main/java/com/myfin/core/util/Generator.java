@@ -13,11 +13,7 @@ public class Generator {
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < 14; i++) {
-            if (random.nextBoolean()) {
-                sb.append((char)(random.nextInt(26) + 65));
-            } else {
-                sb.append(random.nextInt(10));
-            }
+            sb.append(random.nextInt(10));
         }
         return sb.toString();
     }

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 @Slf4j
@@ -48,6 +49,9 @@ public class H2DBInit {
                     phone_num,
                     email
             );
+            Field id = user.getClass().getDeclaredField("id");
+            id.setAccessible(true);
+            id.set(user, "tester_id");
             userRepository.save(user);
 
         } catch (Exception e) {

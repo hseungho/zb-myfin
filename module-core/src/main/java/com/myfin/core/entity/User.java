@@ -1,16 +1,16 @@
 package com.myfin.core.entity;
 
 import com.myfin.core.BaseEntity;
-import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.type.SexType;
 import com.myfin.core.type.UserType;
+import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.util.SeoulDateTime;
+import com.myfin.core.util.UUIDGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,10 +29,10 @@ public class User extends BaseEntity implements UserDetails {
 
     /** User PK ID */
     @Id
-    @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
-    @GeneratedValue(generator = "uuidGen")
+//    @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
+//    @GeneratedValue(generator = "uuidGen")
     @Column(name = "id", nullable = false, updatable = false, unique = true)
-    private String id;
+    private String id = UUIDGenerator.generate();
 
     /** 유저 아이디 */
     @Column(name = "user_id", nullable = false, unique = true)
@@ -80,7 +80,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @OneToOne(mappedBy = "owner")
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
     private Account account;
 
     @Transient

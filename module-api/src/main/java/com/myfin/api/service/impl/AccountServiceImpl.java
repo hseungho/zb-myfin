@@ -51,7 +51,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     @Override
     @Transactional
     public AccountDto deleteAccount(DeleteAccount.Request request) {
-        User user = userRepository.findById(loginUserId())
+        User user = userRepository.findById(loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
         Account account = user.getAccount();

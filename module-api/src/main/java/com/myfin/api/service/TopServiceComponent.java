@@ -229,8 +229,8 @@ public class TopServiceComponent {
      * 로그인 유저의 PK ID를 반환.
      * @return 로그인 유저의 PK ID
      */
-    protected String loginUserId() {
-        return ((User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getUserId();
+    protected String loginId() {
+        return this.loginUser().getId();
     }
 
 }
