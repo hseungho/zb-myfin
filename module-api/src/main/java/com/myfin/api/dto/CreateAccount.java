@@ -17,7 +17,7 @@ public class CreateAccount {
 
     @EqualsAndHashCode(callSuper = true)
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends ATopResponse {
+    public static class Response extends TopResponse {
         private UserResponse user;
         private AccountResponse account;
 

@@ -38,7 +38,7 @@ public class SignUp {
 
     @EqualsAndHashCode(callSuper = true)
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends ATopResponse {
+    public static class Response extends TopResponse {
         private String userId;
         private String userName;
         private String createdAt;

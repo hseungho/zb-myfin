@@ -14,7 +14,7 @@ public class Login {
 
     @EqualsAndHashCode(callSuper = true)
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends ATopResponse {
+    public static class Response extends TopResponse {
         private String accessToken;
         private String refreshToken;
         private String lastLoggedInAt;
