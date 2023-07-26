@@ -1,4 +1,4 @@
-package com.myfin.api.config;
+package com.myfin.api.config.core;
 
 import com.myfin.core.entity.User;
 import com.myfin.core.repository.UserRepository;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 @Slf4j
@@ -45,9 +46,12 @@ public class H2DBInit {
                     zip_code,
                     address_1,
                     address_2,
-                    encryptService.encrypt(phone_num),
+                    phone_num,
                     email
             );
+            Field id = user.getClass().getDeclaredField("id");
+            id.setAccessible(true);
+            id.set(user, "tester_id");
             userRepository.save(user);
 
         } catch (Exception e) {

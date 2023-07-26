@@ -1,6 +1,8 @@
 package com.myfin.api.service;
 
+import com.myfin.core.entity.User;
 import com.myfin.core.util.SeoulDate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -9,10 +11,9 @@ import java.util.regex.Pattern;
 
 /**
  * ATopServiceComponent 클래스는 Service 클래스들의 최상위 클래스로써, <br>
- * 다수의 Service 클래스에서 사용되는 기능들을 정의하도록 한 클래스이다. <br>
- * 클래스 앞에 `A` 접두사가 붙은 이유는 알파벳순으로 패키지 최상단에 위치하고자 함이다.
+ * 다수의 Service 클래스에서 사용되는 기능들을 정의하도록 한 클래스이다.
  */
-public class ATopServiceComponent {
+public class TopServiceComponent {
 
     /**
      * 파라미터가 null인지 확인.
@@ -64,6 +65,16 @@ public class ATopServiceComponent {
      */
     protected boolean isMatch(Object o1, Object o2) {
         return Objects.equals(o1, o2);
+    }
+
+    /**
+     * 두 파라미터가 불일치하는지 확인.
+     * @param o1 확인할 파라미터 1
+     * @param o2 확인할 파라미터 2
+     * @return 두 파라미터가 불일치하면 true
+     */
+    protected boolean isNonMatch(Object o1, Object o2) {
+        return !isMatch(o1, o2);
     }
 
     /**
@@ -140,8 +151,86 @@ public class ATopServiceComponent {
         return !isValidEmailPattern(email);
     }
 
+    /**
+     * 올바르지 않은 형식의 계정 비밀번호인지 확인.
+     * @param password
+     * @return
+     */
+    protected boolean isInvalidAccountPassword(String password) {
+        if (password.length() != 4)
+            return true;
+        if (isNaN(password))
+            return true;
+        if (isExistDuplicateNumbersInRow(password))
+            return true;
+
+        return false;
+    }
+
+    /**
+     * String 파라미터 중에 연속되어 중복된 문자가 있는지 확인.
+     * @param number 확인할 String 변수
+     * @return 중복된 문자가 존재하다면 true
+     */
+    private boolean isExistDuplicateNumbersInRow(String number) {
+        for (int i = 0; i < number.length() - 1; i++) {
+            char c1 = number.charAt(i);
+            char c2 = number.charAt(i + 1);
+            if (c1 == c2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * String 파라미터가 숫자인지 아닌지 확인.
+     * @param number 확인할 String 변수
+     * @return 올바른 숫자라면 true
+     */
+    protected boolean isNaN(String number) {
+        if (number == null || "".equals(number))
+            return false;
+
+        int size = number.length();
+        int st_no= 0;
+
+        if (number.charAt(0) == 45)
+            st_no = 1;
+
+        for (int i=st_no; i<size; ++i) {
+            if (!(48<=((int)number.charAt(i)) && 57>=((int)number.charAt(i)))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 휴대폰번호 중 '-'가 존재하다면 이를 제거하여 숫자로만 <br>
+     * 구성된 휴대폰번호를 반환.
+     * @param phoneNum '-'를 제거할 휴대폰번호
+     * @return 휴대폰번호
+     */
     protected String convertPhoneNum(String phoneNum) {
         return phoneNum.strip().replace("-", "");
+    }
+
+    /**
+     * 로그인 유저의 `User` 객체를 반환.
+     * @return 로그인 유저의 `User` 객체
+     */
+    protected User loginUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    /**
+     * 로그인 유저의 PK ID를 반환.
+     * @return 로그인 유저의 PK ID
+     */
+    protected String loginId() {
+        return this.loginUser().getId();
     }
 
 }

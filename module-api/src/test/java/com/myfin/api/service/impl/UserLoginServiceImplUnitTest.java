@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -60,9 +59,9 @@ class UserLoginServiceImplUnitTest {
                 ));
         given(passwordEncoderService.mismatch(anyString(), anyString()))
                 .willReturn(false);
-        given(jwtComponent.generateAccessToken(anyString(), any()))
+        given(jwtComponent.generateAccessToken(anyString(), anyString()))
                 .willReturn("access_token");
-        given(jwtComponent.generateRefreshToken(anyString(), any()))
+        given(jwtComponent.generateRefreshToken(anyString(), anyString()))
                 .willReturn("refresh_token");
         // when
         TokenDto result = userLoginService.login("user_id", "user_pw");

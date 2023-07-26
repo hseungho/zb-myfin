@@ -3,13 +3,14 @@ package com.myfin.core.entity;
 import com.myfin.core.BaseEntity;
 import com.myfin.core.type.SexType;
 import com.myfin.core.type.UserType;
+import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.util.SeoulDateTime;
+import com.myfin.core.util.UUIDGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,10 +29,10 @@ public class User extends BaseEntity implements UserDetails {
 
     /** User PK ID */
     @Id
-    @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
-    @GeneratedValue(generator = "uuidGen")
-    @Column(name = "id", nullable = false, updatable = false)
-    private String id;
+//    @GenericGenerator(name = "uuidGen", strategy = "com.myfin.core.util.UUIDGenerator")
+//    @GeneratedValue(generator = "uuidGen")
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    private String id = UUIDGenerator.generate();
 
     /** 유저 아이디 */
     @Column(name = "user_id", nullable = false, unique = true)
@@ -60,6 +61,7 @@ public class User extends BaseEntity implements UserDetails {
 
     /** 유저의 휴대폰번호 (encrypted) */
     @Column(name = "phone_num", nullable = false, unique = true)
+    @Convert(converter = EncryptConverter.class)
     private String phoneNum;
 
     /** 유저의 이메일 주소 */
@@ -77,6 +79,9 @@ public class User extends BaseEntity implements UserDetails {
     /** 유저의 삭제일시 */
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
+    private Account account;
 
     @Transient
     private Boolean isOnLoginRequest = false;
@@ -151,5 +156,9 @@ public class User extends BaseEntity implements UserDetails {
     public void login() {
         this.lastLoggedInAt = SeoulDateTime.now();
         isOnLoginRequest = true;
+    }
+
+    public void associate(Account account) {
+        this.account = account;
     }
 }

@@ -1,4 +1,4 @@
-package com.myfin.core.config;
+package com.myfin.api.config.core;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;

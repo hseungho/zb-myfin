@@ -1,7 +1,7 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.TokenDto;
-import com.myfin.api.service.ATopServiceComponent;
+import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.UserLoginService;
 import com.myfin.core.entity.User;
 import com.myfin.core.exception.impl.BadRequestException;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserLoginServiceImpl extends ATopServiceComponent implements UserLoginService {
+public class UserLoginServiceImpl extends TopServiceComponent implements UserLoginService {
 
     private final UserRepository userRepository;
 
@@ -43,8 +43,8 @@ public class UserLoginServiceImpl extends ATopServiceComponent implements UserLo
 
         // 토큰 발행 및 응답
         return TokenDto.builder()
-                .accessToken(jwtComponent.generateAccessToken(user.getId(), user.getType()))
-                .refreshToken(jwtComponent.generateRefreshToken(user.getId(), user.getType()))
+                .accessToken(jwtComponent.generateAccessToken(user.getId(), user.getType().name()))
+                .refreshToken(jwtComponent.generateRefreshToken(user.getId(), user.getType().name()))
                 .lastLoggedInAt(user.getLastLoggedInAt())
                 .build();
     }

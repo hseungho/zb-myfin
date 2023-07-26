@@ -1,5 +1,8 @@
-package com.myfin.security.config;
+package com.myfin.api.config.security;
 
+import com.myfin.api.config.security.filter.JwtAuthenticationFilter;
+import com.myfin.api.service.UserAuthenticationService;
+import com.myfin.security.jwt.JwtComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +27,9 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private static final String[] PERMIT_ALL = new String[]{"/**/sign-up/**", "/**/login/**", "/h2-console/**"};
+
+    private final JwtComponent jwtComponent;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -47,7 +54,7 @@ public class SecurityConfiguration {
                 )
 //                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
 //                .and()
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtComponent), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtComponent, userAuthenticationService), UsernamePasswordAuthenticationFilter.class)
 //                .addFilterBefore(new JwtAuthenticationFailureFilter(), JwtAuthenticationFilter.class)
 //                .logout(Customizer.withDefaults())
                 .build();

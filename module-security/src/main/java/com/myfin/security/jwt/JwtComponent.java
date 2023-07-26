@@ -1,7 +1,5 @@
 package com.myfin.security.jwt;
 
-import com.myfin.core.type.UserType;
-import com.myfin.security.service.UserAuthenticationComponent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,9 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -29,7 +24,7 @@ import java.util.Date;
 public class JwtComponent {
 
     public static final String CLAIMS_ROLE = "role";
-    public static final long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 60;
+    public static final long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 60 * 24 * 30L; // <- temp
     public static final long REFRESH_TOKEN_EXPIRED_TIME = 1000 * 60 * 60 * 24 * 30L;
     public static final String TOKEN_HEADER = HttpHeaders.AUTHORIZATION;
     public static final String TOKEN_PREFIX = "Bearer ";
@@ -37,15 +32,13 @@ public class JwtComponent {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final UserAuthenticationComponent userAuthenticationComponent;
-
     /**
      * 해당 유저에 대한 액세스 토큰을 생성하는 메소드.
      * @param id 해당 유저의 PK ID
      * @param type 해당 유저의 UserType
      * @return 생성된 JWT 액세스 토큰
      */
-    public String generateAccessToken(String id, UserType type) {
+    public String generateAccessToken(String id, String type) {
         return TOKEN_PREFIX + generateToken(id, type, ACCESS_TOKEN_EXPIRED_TIME);
     }
 
@@ -55,7 +48,7 @@ public class JwtComponent {
      * @param type 해당 유저의 UserType
      * @return 생성된 JWT 리프레시 토큰
      */
-    public String generateRefreshToken(String id, UserType type) {
+    public String generateRefreshToken(String id, String type) {
         return TOKEN_PREFIX + generateToken(id, type, REFRESH_TOKEN_EXPIRED_TIME);
     }
 
@@ -66,9 +59,9 @@ public class JwtComponent {
      * @param expired 토큰의 만료시간
      * @return 생성된 JWT 토큰
      */
-    private String generateToken(String id, UserType type, long expired) {
+    private String generateToken(String id, String type, long expired) {
         Claims claims = Jwts.claims().setSubject(id);
-        claims.put(CLAIMS_ROLE, type.name());
+        claims.put(CLAIMS_ROLE, type);
 
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + expired);
@@ -91,17 +84,6 @@ public class JwtComponent {
 
         var claims = this.parseClaims(token);
         return !claims.getExpiration().before(new Date());
-    }
-
-    /**
-     * 토큰 Payload 에 담겨있는 유저 PK ID를 이용하여 DB를 조회한 뒤, <br>
-     * UsernamePasswordAuthenticationToken 을 반환하는 메소드.
-     * @param token 토큰 값
-     * @return UsernamePasswordAuthenticationToken 로 객체화한 Authentication 인터페이스
-     */
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userAuthenticationComponent.loadUserByUsername(this.getId(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     /**
