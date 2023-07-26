@@ -14,10 +14,10 @@ import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.repository.TransactionRepository;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
+import com.myfin.redis.lock.AccountLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,7 +54,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
         );
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @AccountLock(key = "#request.getAccountNumber()")
     protected void deposit(Deposit.Request request, Account account) {
         account.deposit(request.getAmount());
     }

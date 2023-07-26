@@ -60,7 +60,7 @@ public class User extends BaseEntity implements UserDetails {
     private UserAddressVO userAddress;
 
     /** 유저의 휴대폰번호 (encrypted) */
-    @Column(name = "phone_num", nullable = false, unique = true)
+    @Column(name = "phone_num", nullable = false)
     @Convert(converter = EncryptConverter.class)
     private String phoneNum;
 
