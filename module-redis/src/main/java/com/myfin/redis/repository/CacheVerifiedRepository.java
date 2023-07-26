@@ -1,6 +1,6 @@
-package com.myfin.cache.repository;
+package com.myfin.redis.repository;
 
-import com.myfin.cache.entity.CacheVerified;
+import com.myfin.redis.entity.CacheVerified;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

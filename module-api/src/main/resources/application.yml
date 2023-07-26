@@ -5,6 +5,6 @@ spring:
   profiles:
     include:
       - core
-      - cache
+      - redis
       - adapter
       - security

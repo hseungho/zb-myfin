@@ -18,7 +18,7 @@ repositories {
 dependencies {
     implementation project(':module-core')
     implementation project(':module-adapter')
-    implementation project(':module-cache')
+    implementation project(':module-redis')
     implementation project(':module-security')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
