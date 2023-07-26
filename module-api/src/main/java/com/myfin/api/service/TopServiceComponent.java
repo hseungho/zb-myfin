@@ -30,6 +30,30 @@ public class TopServiceComponent {
     }
 
     /**
+     * 파라미터(들)가 기준 최솟값보다 작거나 같은지를 확인.
+     * @param min 기준 최솟값
+     * @param targets 확인할 파라미터(들)
+     * @return 기준 최솟값보다 작거나 같으면 true
+     */
+    protected boolean isLessThanEquals(long min, Long... targets) {
+        for (Long var : targets) {
+            if (var <= min) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 파라미터(들)가 0보다 작거나 같은지를 확인.
+     * @param targets 확인할 파라미터(들)
+     * @return 0보다 작거나 같으면 true
+     */
+    protected boolean isLessThanEqualsToZero(Long...targets) {
+        return isLessThanEquals(0L, targets);
+    }
+
+    /**
      * String 파라미터가 null이 아니면서 blank가 아닌지 확인.
      * @param args 확인할 String 변수(들)
      * @return null이 아니면서 blank가 아니라면 true
@@ -73,7 +97,7 @@ public class TopServiceComponent {
      * @param o2 확인할 파라미터 2
      * @return 두 파라미터가 불일치하면 true
      */
-    protected boolean isNonMatch(Object o1, Object o2) {
+    protected boolean isMismatch(Object o1, Object o2) {
         return !isMatch(o1, o2);
     }
 

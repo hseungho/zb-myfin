@@ -18,4 +18,17 @@ public class Generator {
         return sb.toString();
     }
 
+    public static String generateTxnNumber() {
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 10; i++) {
+            if (random.nextBoolean()) {
+                sb.append((char)(random.nextInt(26) + 65));
+            } else {
+                sb.append(random.nextInt(10));
+            }
+        }
+        return sb.toString();
+    }
+
 }

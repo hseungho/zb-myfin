@@ -1,9 +1,11 @@
 package com.myfin.api.mock;
 
 import com.myfin.core.entity.Account;
+import com.myfin.core.entity.Transaction;
 import com.myfin.core.entity.User;
 import com.myfin.core.entity.UserAddressVO;
 import com.myfin.core.type.SexType;
+import com.myfin.core.type.TransactionType;
 import com.myfin.core.type.UserType;
 
 import java.time.LocalDate;
@@ -44,5 +46,21 @@ public class MockFactory {
                 .deletedAt(deletedAt)
                 .build()
                 .associate(owner);
+    }
+
+    public static Transaction mock_transaction(Account account,
+                                               Long amount,
+                                               String rctAccountNumber,
+                                               TransactionType type,
+                                               LocalDateTime tradedAt) {
+        return Transaction.builder()
+                .id(1L)
+                .number("txn_number")
+                .amount(amount)
+                .recipientAccountNumber(rctAccountNumber)
+                .type(type)
+                .tradedAt(tradedAt)
+                .account(account)
+                .build();
     }
 }

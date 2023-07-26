@@ -68,7 +68,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
             // 계좌 삭제를 위한 계좌번호 또는 계좌비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호와 계좌비밀번호 모두 입력해주세요");
         }
-        if (isNonMatch(request.getAccountNumber(), account.getNumber())) {
+        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
             // 계좌 삭제 시 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
             throw new ForbiddenException("해당 계좌번호는 유저님의 계좌번호가 아닙니다");
         }
@@ -90,11 +90,9 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
         AtomicInteger count = new AtomicInteger();
         while (count.get() < 100) {
             String newAccountNumber = Generator.generateAccountNumber();
-
             if (!accountRepository.existsByNumber(newAccountNumber)) {
                 return newAccountNumber;
             }
-
             count.getAndIncrement();
         }
         throw new InternalServerException("계좌번호 생성에 문제가 발생하였습니다. 관리자에게 문의해주세요");

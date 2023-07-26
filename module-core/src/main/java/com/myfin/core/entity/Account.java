@@ -67,5 +67,10 @@ public class Account extends BaseEntity {
     public void delete() {
         this.deletedAt = SeoulDateTime.now();
     }
+
+    public void deposit(Long amount) {
+        this.balance += amount;
+    }
+
 }
 

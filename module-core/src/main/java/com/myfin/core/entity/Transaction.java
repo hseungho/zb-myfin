@@ -2,6 +2,7 @@ package com.myfin.core.entity;
 
 import com.myfin.core.util.EncryptConverter;
 import com.myfin.core.type.TransactionType;
+import com.myfin.core.util.SeoulDateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,5 +43,19 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public static Transaction createDeposit(String number,
+                                            Long amount,
+                                            String rctAccountNumber,
+                                            Account account) {
+        return Transaction.builder()
+                .number(number)
+                .amount(amount)
+                .type(TransactionType.DEPOSIT)
+                .recipientAccountNumber(rctAccountNumber)
+                .tradedAt(SeoulDateTime.now())
+                .account(account)
+                .build();
+    }
 
 }
