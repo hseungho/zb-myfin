@@ -2,7 +2,6 @@ package com.myfin.api.controller;
 
 import com.myfin.api.dto.CreateAccount;
 import com.myfin.api.dto.DeleteAccount;
-import com.myfin.api.dto.Deposit;
 import com.myfin.api.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +29,6 @@ public class AccountController {
         return DeleteAccount.Response.fromDto(
                 accountService.deleteAccount(request)
         );
-    }
-
-    @PostMapping("/deposit")
-    @ResponseStatus(HttpStatus.OK)
-    public Deposit.Response deposit(@RequestBody @Valid Deposit.Request request) {
-        return Deposit.Response.fromDto();
     }
 
 }
