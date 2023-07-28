@@ -126,6 +126,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
         }
         throw new InternalServerException("거래번호 생성에 문제가 발생하였습니다. 관리자에게 문의해주세요");
     }
+
     private void validateDepositRequest(Deposit.Request request, Account account) {
         if (hasNotTexts(request.getAccountNumber())) {
             // 계좌번호를 입력하지 않은 경우

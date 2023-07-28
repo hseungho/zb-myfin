@@ -29,6 +29,10 @@ public class MockFactory {
                 .build();
     }
 
+    public static User mock_user(UserType type) {
+        return mock_user(type, null, null, null);
+    }
+
     public static User mock_user(UserType type,
                                  LocalDateTime createdAt,
                                  LocalDateTime updatedAt,
