@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.Deposit;
+import com.myfin.api.dto.Withdrawal;
 import com.myfin.api.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,12 @@ public class TransactionController {
         return Deposit.Response.fromDto(
                 transactionService.deposit(request)
         );
+    }
+
+    @PostMapping("/withdrawal")
+    @ResponseStatus(HttpStatus.OK)
+    public Withdrawal.Response withdrawal(@RequestBody @Valid Withdrawal.Request request) {
+        return Withdrawal.Response.fromDto();
     }
 
 }
