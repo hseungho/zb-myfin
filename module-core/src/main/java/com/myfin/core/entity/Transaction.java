@@ -58,4 +58,17 @@ public class Transaction {
                 .build();
     }
 
+    public static Transaction createWithdrawal(String number,
+                                               Long amount,
+                                               String rctAccountNumber,
+                                               Account account) {
+        return Transaction.builder()
+                .number(number)
+                .amount(amount)
+                .type(TransactionType.WITHDRAWAL)
+                .recipientAccountNumber(rctAccountNumber)
+                .tradedAt(SeoulDateTime.now())
+                .account(account)
+                .build();
+    }
 }

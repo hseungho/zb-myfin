@@ -72,5 +72,10 @@ public class Account extends BaseEntity {
         this.balance += amount;
     }
 
+    public void withdrawal(Long amount) {
+        synchronized (this) {
+            this.balance -= amount;
+        }
+    }
 }
 

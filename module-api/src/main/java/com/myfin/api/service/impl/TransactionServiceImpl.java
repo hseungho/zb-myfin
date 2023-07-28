@@ -1,6 +1,7 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.Deposit;
+import com.myfin.api.dto.Withdrawal;
 import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.TransactionService;
 import com.myfin.core.dto.TransactionDto;
@@ -15,6 +16,7 @@ import com.myfin.core.repository.TransactionRepository;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
 import com.myfin.redis.lock.AccountLock;
+import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
 
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+
+    private final PasswordEncoderService passwordEncoderService;
 
     @Override
     @Transactional
@@ -54,9 +58,61 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
         );
     }
 
+    @Override
+    @Transactional
+    public TransactionDto withdrawal(Withdrawal.Request request) {
+        User user = userRepository.findById(loginId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
+
+        Account account = user.getAccount();
+
+        validateWithdrawalRequest(request, account);
+
+        withdrawal(request, account);
+
+        return TransactionDto.fromEntity(
+                transactionRepository.save(
+                        Transaction.createWithdrawal(
+                                generateTxnNumber(),
+                                request.getAmount(),
+                                account.getNumber(),
+                                account
+                        )
+                )
+        );
+    }
+
     @AccountLock(key = "#request.getAccountNumber()")
     protected void deposit(Deposit.Request request, Account account) {
         account.deposit(request.getAmount());
+    }
+
+    @AccountLock(key = "#request.getAccountNumber()")
+    private void withdrawal(Withdrawal.Request request, Account account) {
+        account.withdrawal(request.getAmount());
+    }
+
+    private void validateWithdrawalRequest(Withdrawal.Request request, Account account) {
+        if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
+            // 계좌번호 및 계좌비밀번호를 입력하지 않은 경우
+            throw new BadRequestException("계좌번호 및 계좌비밀번호를 모두 입력해주세요");
+        }
+        if (isLessThanEqualsToZero(request.getAmount())) {
+            // 출금액이 0보다 작거나 같은 경우
+            throw new BadRequestException("출금액을 1원 이상 입력해주세요");
+        }
+        if (account == null) {
+            // 유저가 계좌를 보유하고 있지 않은 경우
+            throw new NotFoundException("계좌를 보유하고 있지 않습니다");
+        }
+        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+            // 요청 계좌번호와 유저 계좌의 계좌번호가 일치하지 않는 경우
+            throw new ForbiddenException("계좌번호가 일치하지 않습니다");
+        }
+        if (passwordEncoderService.mismatch(request.getAccountPassword(), account.getPassword())) {
+            // 요청 계좌비밀번호와 유저 계좌의 계좌비밀번호가 일치하지 않는 경우
+            throw new ForbiddenException("계좌비밀번호가 일치하지 않습니다");
+        }
     }
 
     private String generateTxnNumber() {

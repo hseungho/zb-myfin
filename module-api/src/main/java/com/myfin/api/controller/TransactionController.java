@@ -26,7 +26,9 @@ public class TransactionController {
     @PostMapping("/withdrawal")
     @ResponseStatus(HttpStatus.OK)
     public Withdrawal.Response withdrawal(@RequestBody @Valid Withdrawal.Request request) {
-        return Withdrawal.Response.fromDto();
+        return Withdrawal.Response.fromDto(
+                transactionService.withdrawal(request)
+        );
     }
 
 }
