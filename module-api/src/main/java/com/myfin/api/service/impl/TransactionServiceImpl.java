@@ -113,6 +113,10 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
             // 요청 계좌비밀번호와 유저 계좌의 계좌비밀번호가 일치하지 않는 경우
             throw new ForbiddenException("계좌비밀번호가 일치하지 않습니다");
         }
+        if (account.cannotWithdrawal(request.getAmount())) {
+            // 계좌 잔액이 출금액보다 적은 경우
+            throw new BadRequestException("잔액이 부족합니다");
+        }
     }
 
     private String generateTxnNumber() {

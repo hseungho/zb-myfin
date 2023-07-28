@@ -77,5 +77,11 @@ public class Account extends BaseEntity {
             this.balance -= amount;
         }
     }
+
+    public boolean cannotWithdrawal(Long amount) {
+        synchronized (this) {
+            return this.balance < amount;
+        }
+    }
 }
 
