@@ -43,11 +43,15 @@ public class AccountLockAop {
 
         // 1) 락의 이름으로 RLock 인스턴스를 가져온다.
         RLock lock = redissonClient.getLock(key);
+        log.info("[MYFIN][AccountLockAop] Account {} get Lock.", keyMasking(key));
 
         try {
             // 2) 정의된 waitTime까지 획득을 시도한다, 정의된 leaseTime이 지나면 잠금을 해제한다.
             boolean available = lock.tryLock(accountLock.waitTime(), accountLock.leaseTime(), accountLock.timeUnit());
+            log.info("[MYFIN][AccountLockAop] Account {} try Lock.", keyMasking(key));
+
             if (!available) {
+                log.info("[MYFIN][AccountLockAop] Account {} failed trying Lock.", keyMasking(key));
                 return false;
             }
 
@@ -60,9 +64,16 @@ public class AccountLockAop {
             try {
                 // 4) 종료 시 무조건 락을 해제한다.
                 lock.unlock();
+                log.info("[MYFIN][AccountLockAop] Account {} unlock.", keyMasking(key));
             } catch (IllegalMonitorStateException e) {
-                log.info("Redisson Lock Already UnLock. serviceName -> {}, key -> {}", method.getName(), key);
+                log.info("Redisson Lock Already UnLock. serviceName -> {}, key -> {}", method.getName(), keyMasking(key));
             }
         }
+    }
+
+    private String keyMasking(final String key) {
+        int i = 5;
+        String mask = "*".repeat(i);
+        return new StringBuffer(key).replace(key.length()-i, key.length(), mask).toString();
     }
 }

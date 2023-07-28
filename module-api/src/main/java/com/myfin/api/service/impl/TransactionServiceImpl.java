@@ -36,6 +36,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
 
     @Override
     @Transactional
+    @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto deposit(Deposit.Request request) {
         User user = userRepository.findById(loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
@@ -44,7 +45,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
 
         validateDepositRequest(request, account);
 
-        deposit(request, account);
+        account.deposit(request.getAmount());
 
         return TransactionDto.fromEntity(
                 transactionRepository.save(
@@ -60,6 +61,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
 
     @Override
     @Transactional
+    @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto withdrawal(Withdrawal.Request request) {
         User user = userRepository.findById(loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
@@ -68,7 +70,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
 
         validateWithdrawalRequest(request, account);
 
-        withdrawal(request, account);
+        account.withdrawal(request.getAmount());
 
         return TransactionDto.fromEntity(
                 transactionRepository.save(
@@ -80,16 +82,6 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
                         )
                 )
         );
-    }
-
-    @AccountLock(key = "#request.getAccountNumber()")
-    protected void deposit(Deposit.Request request, Account account) {
-        account.deposit(request.getAmount());
-    }
-
-    @AccountLock(key = "#request.getAccountNumber()")
-    private void withdrawal(Withdrawal.Request request, Account account) {
-        account.withdrawal(request.getAmount());
     }
 
     private void validateWithdrawalRequest(Withdrawal.Request request, Account account) {

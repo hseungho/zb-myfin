@@ -17,6 +17,7 @@ public class TransactionController {
 
     @PostMapping("/deposit")
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public Deposit.Response deposit(@RequestBody @Valid Deposit.Request request) {
         return Deposit.Response.fromDto(
                 transactionService.deposit(request)
@@ -25,6 +26,7 @@ public class TransactionController {
 
     @PostMapping("/withdrawal")
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody()
     public Withdrawal.Response withdrawal(@RequestBody @Valid Withdrawal.Request request) {
         return Withdrawal.Response.fromDto(
                 transactionService.withdrawal(request)
