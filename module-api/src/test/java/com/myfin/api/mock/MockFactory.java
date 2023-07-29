@@ -83,19 +83,18 @@ public class MockFactory {
                 .associate(owner);
     }
 
-    public static Transaction mock_transaction(Account account,
-                                               Long amount,
-                                               String rctAccountNumber,
-                                               TransactionType type,
-                                               LocalDateTime tradedAt) {
+    public static Transaction mock_transaction_for_deposit_withdrawal(Account account,
+                                                                      Long amount,
+                                                                      TransactionType type,
+                                                                      LocalDateTime tradedAt) {
         return Transaction.builder()
                 .id(1L)
                 .number("txn_number")
                 .amount(amount)
-                .recipientAccountNumber(rctAccountNumber)
                 .type(type)
                 .tradedAt(tradedAt)
-                .account(account)
+                .sender(account)
+                .receiver(account)
                 .build();
     }
 }

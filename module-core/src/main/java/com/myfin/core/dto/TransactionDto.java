@@ -16,9 +16,9 @@ public class TransactionDto {
     private String number;
     private Long amount;
     private TransactionType type;
-    private String recipientAccountNumber;
     private LocalDateTime tradedAt;
-    private AccountDto account;
+    private AccountDto sender;
+    private AccountDto receiver;
 
     public static TransactionDto fromEntity(Transaction entity) {
         return TransactionDto.builder()
@@ -26,9 +26,9 @@ public class TransactionDto {
                 .number(entity.getNumber())
                 .amount(entity.getAmount())
                 .type(entity.getType())
-                .recipientAccountNumber(entity.getRecipientAccountNumber())
                 .tradedAt(entity.getTradedAt())
-                .account(AccountDto.fromEntity(entity.getAccount()))
+                .sender(AccountDto.fromEntity(entity.getSender()))
+                .receiver(AccountDto.fromEntity(entity.getReceiver()))
                 .build();
     }
 

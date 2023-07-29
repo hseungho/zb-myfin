@@ -29,7 +29,7 @@ public class Withdrawal {
 
         public static Response fromDto(TransactionDto dto) {
             return Response.builder()
-                    .account(AccountResponse.fromDto(dto.getAccount()))
+                    .account(AccountResponse.fromDto(dto.getSender()))
                     .transaction(TransactionResponse.fromDto(dto))
                     .build();
         }

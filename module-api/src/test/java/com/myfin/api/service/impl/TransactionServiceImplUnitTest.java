@@ -51,7 +51,7 @@ class TransactionServiceImplUnitTest {
         LocalDateTime now = SeoulDateTime.now();
         User user = TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
         Account account = MockFactory.mock_account(user, 0L, now, now, null);
-        Transaction transaction = MockFactory.mock_transaction(account, 1000L, account.getNumber(), TransactionType.DEPOSIT, now);
+        Transaction transaction = MockFactory.mock_transaction_for_deposit_withdrawal(account, 1000L, TransactionType.DEPOSIT, now);
         given(userRepository.findById(anyString()))
                 .willReturn(Optional.of(user));
         given(transactionRepository.existsByNumber(anyString()))
@@ -69,8 +69,8 @@ class TransactionServiceImplUnitTest {
         assertEquals(TransactionType.DEPOSIT, result.getType());
         assertEquals(account.getNumber(), result.getRecipientAccountNumber());
         assertEquals(now, result.getTradedAt());
-        assertEquals(account.getId(), result.getAccount().getId());
-        assertEquals(account.getNumber(), result.getAccount().getNumber());
+        assertEquals(account.getId(), result.getSender().getId());
+        assertEquals(account.getNumber(), result.getSender().getNumber());
     }
 
     @Test
@@ -190,7 +190,7 @@ class TransactionServiceImplUnitTest {
         LocalDateTime now = SeoulDateTime.now();
         User user = TestSecurityHolder.setSecurityHolderUser(MockFactory.mock_user(UserType.ROLE_USER, null, null, null));
         Account account = MockFactory.mock_account(user, 10000L, now, now, null);
-        Transaction transaction = MockFactory.mock_transaction(account, 1000L, account.getNumber(), TransactionType.WITHDRAWAL, now);
+        Transaction transaction = MockFactory.mock_transaction_for_deposit_withdrawal(account, 1000L, TransactionType.WITHDRAWAL, now);
         given(userRepository.findById(anyString()))
                 .willReturn(Optional.of(user));
         given(passwordEncoderService.mismatch(anyString(), anyString()))
@@ -212,8 +212,8 @@ class TransactionServiceImplUnitTest {
         assertEquals(TransactionType.WITHDRAWAL, result.getType());
         assertEquals(account.getNumber(), result.getRecipientAccountNumber());
         assertEquals(now, result.getTradedAt());
-        assertEquals(account.getId(), result.getAccount().getId());
-        assertEquals(account.getNumber(), result.getAccount().getNumber());
+        assertEquals(account.getId(), result.getSender().getId());
+        assertEquals(account.getNumber(), result.getSender().getNumber());
         assertEquals(9000L, account.getBalance());
     }
 

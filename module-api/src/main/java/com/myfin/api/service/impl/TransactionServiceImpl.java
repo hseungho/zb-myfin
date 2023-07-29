@@ -53,7 +53,6 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
                         Transaction.createDeposit(
                                 generateTxnNumber(),
                                 request.getAmount(),
-                                account.getNumber(),
                                 account
                         )
                 )
@@ -78,7 +77,6 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
                         Transaction.createWithdrawal(
                                 generateTxnNumber(),
                                 request.getAmount(),
-                                account.getNumber(),
                                 account
                         )
                 )
