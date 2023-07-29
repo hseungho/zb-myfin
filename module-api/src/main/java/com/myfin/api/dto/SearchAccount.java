@@ -1,6 +1,6 @@
 package com.myfin.api.dto;
 
-import com.myfin.core.dto.AccountDto;
+import com.myfin.core.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +12,11 @@ public class SearchAccount {
         private MetaResponse meta;
         private DocumentResponse document;
 
-        public static Response fromDto(AccountDto dto) {
+        public static Response fromDto(UserDto dto) {
             return dto != null ?
                     Response.builder()
                             .meta(new MetaResponse(true))
-                            .document(new DocumentResponse(dto.getOwner().getName()))
+                            .document(new DocumentResponse(dto.getName()))
                             .build() :
                     Response.builder()
                             .meta(new MetaResponse(false))
