@@ -255,7 +255,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 
 ### 상세 검토
 - 저장이 필요한 정보
-  - 계좌번호 생성 (14자리 랜덤 수)
+  - 계좌번호 생성 (14자리 랜덤 수) -> 휴대폰번호와 분리하기 위해 맨앞에 3개의 번호는 010이 되지 않도록 한다.
   - 계좌비밀번호 암호화
   - ACCOUNT 엔티티 (계좌번호, 계좌비밀번호, 잔액, 생성일시, 최근수정일시)
 - 요청/응답 구조
@@ -451,3 +451,99 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
     }
     ```
 </details>
+
+<!-- 계좌 정보 조회 API -->
+<br>
+<details>
+<summary style="font-size: large; font-weight: bold">계좌 정보 조회 API</summary>
+
+### 검토한 정보
+```
+- GET /api/v1/accounts
+- 파라미터: 액세스토큰, 계좌번호, 계좌비밀번호
+- 정책
+  - 실패 응답 정책
+    - 액세스토큰이 없거나 유효하지 않은 경우 -> 401 Unauthorized
+    - 이미 탈퇴된 유저인 경우 -> 401 Unauthorized
+    - 파라미터(계좌번호, 계좌비밀번호)을 입력하지 않은 경우 -> 400 BadRequest
+    - 해당 유저가 계좌를 보유하고 있지 않은 경우 -> 404 NotFound
+    - 해당 유저의 계좌의 계좌번호와 요청 계좌번호가 일치하지 않는 경우 -> 403 Forbidden
+    - 해당 유저의 계좌의 계좌비밀번호와 요청 계좌비밀번호가 일치하지 않는 경우 -> 403 Forbidden
+- 성공 응답: 계좌정보(계좌번호, 잔액, 생성일시, 수정일시)
+```
+
+### 상세 검토
+- 저장이 필요한 정보
+  - 없음
+- 요청/응답 구조
+  - 요청
+    ```json
+    // HEADER
+    {
+      "Authorization": "Bearer access_token"
+    }
+    // BODY
+    {
+      "accountNumber": "12345678901234",
+      "accountPassword": "1234"
+    }
+    ```
+  - 응답
+    ```json
+    {
+      "account": {
+        "number": "12345678901234",
+        "balance": 0,
+        "createdAt": "2023-07-01T12:12:00.123123",
+        "updatedAt": "2023-07-01T12:12:00.123123"
+      }
+    }
+    ```
+</details>
+
+<!-- 계좌 검색 API -->
+<br>
+<details>
+<summary style="font-size: large; font-weight: bold">계좌 검색 API</summary>
+
+### 검토한 정보
+```
+- GET /api/v1/search/accounts?param={param}
+- 파라미터: 액세스토큰, 검색할 파라미터(계좌번호 or 휴대폰번호)
+- 정책
+  - 실패 응답 정책
+    - 액세스토큰이 없거나 유효하지 않은 경우 -> 401 Unauthorized
+    - 이미 탈퇴된 유저인 경우 -> 401 Unauthorized
+    - 파라미터(param)을 입력하지 않은 경우 -> 400 BadRequest
+- 성공 응답: 메타정보(검색결과 여부), 검색결과정보(유저성명)
+```
+
+### 상세 검토
+- 저장이 필요한 정보
+  - 없음
+- 요청/응답 구조
+  - 요청
+    ```json
+    // HEADER
+    {
+      "Authorization": "Bearer access_token"
+    }
+    // QUERY-STRING
+    {
+      "param": "123412341234" | "01012341234"
+    }
+    ```
+  - 응답
+    ```json
+    {
+      "meta": {
+        "result": true
+      },
+      "document": {
+        "userName": "테스터"
+      }
+    }
+    ```
+</details>
+
+## 거래 관련 API
