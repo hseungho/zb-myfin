@@ -35,7 +35,9 @@ public class AccountController {
     @GetMapping("/accounts")
     @ResponseStatus(HttpStatus.OK)
     public FindMyAccount.Response findMyAccount(@RequestBody @Valid FindMyAccount.Request request) {
-        return FindMyAccount.Response.fromDto();
+        return FindMyAccount.Response.fromDto(
+                accountService.findMyAccount(request)
+        );
     }
 
 }

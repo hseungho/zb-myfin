@@ -2,6 +2,7 @@ package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.CreateAccount;
 import com.myfin.api.dto.DeleteAccount;
+import com.myfin.api.dto.FindMyAccount;
 import com.myfin.api.service.AccountService;
 import com.myfin.api.service.TopServiceComponent;
 import com.myfin.core.dto.AccountDto;
@@ -63,18 +64,58 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
         return AccountDto.fromEntity(account);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public AccountDto findMyAccount(FindMyAccount.Request request) {
+        User user = userRepository.findById(loginId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
+
+        Account account = user.getAccount();
+
+        validateFindMyAccountRequest(request, account);
+
+        return AccountDto.fromEntity(account);
+    }
+
+    private void validateFindMyAccountRequest(FindMyAccount.Request request, Account account) {
+        if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
+            // 계좌번호 또는 계좌비밀번호를 입력하지 않은 경우
+            throw new BadRequestException("계좌번호와 계좌비밀번호 모두 입력해주세요");
+        }
+        if (account == null) {
+            // 유저가 계좌를 보유하고 있지 않은 경우
+            throw new NotFoundException("계좌를 보유하고 있지 않습니다");
+        }
+        if (account.isDeleted()) {
+            // 계좌가 이미 삭제된 경우
+            throw new NotFoundException("이미 삭제된 계좌입니다");
+        }
+        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+            // 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
+            throw new ForbiddenException("계좌번호가 일치하지 않습니다");
+        }
+        if (passwordEncoderService.mismatch(request.getAccountPassword(), account.getPassword())) {
+            // 요청 계좌비밀번호와 유저의 계좌비밀번호가 불일치한 경우
+            throw new ForbiddenException("계좌비밀번호가 일치하지 않습니다");
+        }
+    }
+
     private void validateDeleteAccountRequest(DeleteAccount.Request request, Account account) {
         if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
             // 계좌 삭제를 위한 계좌번호 또는 계좌비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호와 계좌비밀번호 모두 입력해주세요");
         }
-        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
-            // 계좌 삭제 시 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
-            throw new ForbiddenException("해당 계좌번호는 유저님의 계좌번호가 아닙니다");
+        if (account == null) {
+            // 사용자가 계좌를 가지고 있지 않은 경우
+            throw new NotFoundException("계좌를 보유하고 있지 않습니다");
         }
         if (account.isDeleted()) {
             // 이미 계좌가 삭제된 경우
             throw new NotFoundException("이미 삭제된 계좌입니다");
+        }
+        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+            // 계좌 삭제 시 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
+            throw new ForbiddenException("해당 계좌번호는 유저님의 계좌번호가 아닙니다");
         }
         if (passwordEncoderService.mismatch(request.getAccountPassword(), account.getPassword())) {
             // 계좌 삭제 시 요청 계좌비밀번호와 유저의 계좌비밀번호가 불일치한 경우
