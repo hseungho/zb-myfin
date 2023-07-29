@@ -53,8 +53,7 @@ public class MockFactory {
                 .build();
     }
 
-    public static Account mock_account_for_db(User owner,
-                                       Long balance) {
+    public static Account mock_account_for_db(User owner, Long balance) {
         return Account.builder()
                 .number("account_number")
                 .password("1234")
@@ -62,6 +61,11 @@ public class MockFactory {
                 .build()
                 .associate(owner);
     }
+
+    public static Account mock_account(User owner, Long balance) {
+        return mock_account(owner, balance, null, null, null);
+    }
+
     public static Account mock_account(User owner,
                                        Long balance,
                                        LocalDateTime createdAt,

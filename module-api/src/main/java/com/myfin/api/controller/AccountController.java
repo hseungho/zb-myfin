@@ -2,6 +2,7 @@ package com.myfin.api.controller;
 
 import com.myfin.api.dto.CreateAccount;
 import com.myfin.api.dto.DeleteAccount;
+import com.myfin.api.dto.FindMyAccount;
 import com.myfin.api.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,14 @@ public class AccountController {
     public DeleteAccount.Response deleteAccount(@RequestBody @Valid DeleteAccount.Request request) {
         return DeleteAccount.Response.fromDto(
                 accountService.deleteAccount(request)
+        );
+    }
+
+    @GetMapping("/accounts")
+    @ResponseStatus(HttpStatus.OK)
+    public FindMyAccount.Response findMyAccount(@RequestBody @Valid FindMyAccount.Request request) {
+        return FindMyAccount.Response.fromDto(
+                accountService.findMyAccount(request)
         );
     }
 
