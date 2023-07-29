@@ -1,6 +1,7 @@
 package com.myfin.api.controller;
 
 import com.myfin.api.dto.Deposit;
+import com.myfin.api.dto.Transfer;
 import com.myfin.api.dto.Withdrawal;
 import com.myfin.api.service.TransactionService;
 import jakarta.validation.Valid;
@@ -17,7 +18,6 @@ public class TransactionController {
 
     @PostMapping("/deposit")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public Deposit.Response deposit(@RequestBody @Valid Deposit.Request request) {
         return Deposit.Response.fromDto(
                 transactionService.deposit(request)
@@ -26,11 +26,16 @@ public class TransactionController {
 
     @PostMapping("/withdrawal")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody()
     public Withdrawal.Response withdrawal(@RequestBody @Valid Withdrawal.Request request) {
         return Withdrawal.Response.fromDto(
                 transactionService.withdrawal(request)
         );
+    }
+
+    @PostMapping("/transfer")
+    @ResponseStatus(HttpStatus.OK)
+    public Transfer.Response transfer(@RequestBody @Valid Transfer.Request request) {
+        return Transfer.Response.fromDto();
     }
 
 }
