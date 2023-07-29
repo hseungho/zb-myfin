@@ -12,6 +12,10 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 @Entity(name = "account")
+@Table(
+        name = "account",
+        indexes = @Index(name = "idx__act_no", columnList = "act_no")
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

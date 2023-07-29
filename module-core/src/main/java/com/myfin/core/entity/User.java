@@ -21,6 +21,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity(name = "users")
+@Table(
+        name = "users",
+        indexes = @Index(name = "idx__phone_num", columnList = "phone_num")
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
