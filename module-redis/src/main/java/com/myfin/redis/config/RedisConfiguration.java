@@ -1,5 +1,8 @@
-package com.myfin.cache.config;
+package com.myfin.redis.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -18,7 +21,7 @@ import java.time.Duration;
 
 @Configuration
 @EnableCaching
-@EnableRedisRepositories(basePackages = {"com.myfin.cache"})
+@EnableRedisRepositories(basePackages = {"com.myfin.redis"})
 public class RedisConfiguration {
 
     @Value("${spring.data.redis.host}")
@@ -41,6 +44,13 @@ public class RedisConfiguration {
                 .entryTtl(Duration.ofMinutes(30L));
         builder.cacheDefaults(configuration);
         return builder.build();
+    }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://" + host + ":" + port);
+        return Redisson.create(config);
     }
 
 }

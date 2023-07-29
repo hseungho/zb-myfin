@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * ATopServiceComponent 클래스는 Service 클래스들의 최상위 클래스로써, <br>
+ * TopServiceComponent 클래스는 Service 클래스들의 최상위 클래스로써, <br>
  * 다수의 Service 클래스에서 사용되는 기능들을 정의하도록 한 클래스이다.
  */
 public class TopServiceComponent {
@@ -27,6 +27,30 @@ public class TopServiceComponent {
             }
         }
         return false;
+    }
+
+    /**
+     * 파라미터(들)가 기준 최솟값보다 작거나 같은지를 확인.
+     * @param min 기준 최솟값
+     * @param targets 확인할 파라미터(들)
+     * @return 기준 최솟값보다 작거나 같으면 true
+     */
+    protected boolean isLessThanEquals(long min, Long... targets) {
+        for (Long var : targets) {
+            if (var <= min) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 파라미터(들)가 0보다 작거나 같은지를 확인.
+     * @param targets 확인할 파라미터(들)
+     * @return 0보다 작거나 같으면 true
+     */
+    protected boolean isLessThanEqualsToZero(Long...targets) {
+        return isLessThanEquals(0L, targets);
     }
 
     /**
@@ -73,7 +97,7 @@ public class TopServiceComponent {
      * @param o2 확인할 파라미터 2
      * @return 두 파라미터가 불일치하면 true
      */
-    protected boolean isNonMatch(Object o1, Object o2) {
+    protected boolean isMismatch(Object o1, Object o2) {
         return !isMatch(o1, o2);
     }
 

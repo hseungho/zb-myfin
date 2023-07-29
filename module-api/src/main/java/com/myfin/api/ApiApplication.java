@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@EntityScan(basePackages = {"com.myfin.core.entity", "com.myfin.cache"})
+@EntityScan(basePackages = {"com.myfin.core.entity", "com.myfin.redis"})
 @ComponentScan(basePackages = {"com.myfin"})
 public class ApiApplication {
 

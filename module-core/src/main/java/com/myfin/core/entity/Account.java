@@ -67,5 +67,21 @@ public class Account extends BaseEntity {
     public void delete() {
         this.deletedAt = SeoulDateTime.now();
     }
+
+    public void deposit(Long amount) {
+        this.balance += amount;
+    }
+
+    public void withdrawal(Long amount) {
+        synchronized (this) {
+            this.balance -= amount;
+        }
+    }
+
+    public boolean cannotWithdrawal(Long amount) {
+        synchronized (this) {
+            return this.balance < amount;
+        }
+    }
 }
 

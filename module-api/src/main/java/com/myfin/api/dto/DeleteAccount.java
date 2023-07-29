@@ -20,7 +20,7 @@ public class DeleteAccount {
     }
 
     @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends ATopResponse {
+    public static class Response extends TopResponse {
         private String accountNumber;
         private String createdAt;
         private String deletedAt;

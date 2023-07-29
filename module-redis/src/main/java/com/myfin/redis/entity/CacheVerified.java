@@ -1,4 +1,4 @@
-package com.myfin.cache.entity;
+package com.myfin.redis.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,21 +10,19 @@ import org.springframework.data.redis.core.RedisHash;
 import java.util.Objects;
 
 @Getter
-@RedisHash(value = "VerifyCode", timeToLive = 180L) // TTL: 3분
+@RedisHash(value = "Verified", timeToLive = 86400L) // TTL: 1일
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
-public class CacheVerifyCode {
+public class CacheVerified {
 
     @Id
     private String phoneNum;
-
-    private String code;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CacheVerifyCode that = (CacheVerifyCode) o;
+        CacheVerified that = (CacheVerified) o;
         return Objects.equals(phoneNum, that.phoneNum);
     }
 
