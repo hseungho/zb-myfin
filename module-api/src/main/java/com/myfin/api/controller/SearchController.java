@@ -15,7 +15,7 @@ public class SearchController {
 
     @GetMapping("/search/accounts")
     @ResponseStatus(HttpStatus.OK)
-    public SearchAccount.Response searchAccount(@RequestParam(value = "keyword", required = true) final String keyword) {
+    public SearchAccount.Response searchAccount(@RequestParam(value = "param", required = true) final String keyword) {
         return SearchAccount.Response.fromDto(
                 accountUserSearchService.search(keyword)
         );
