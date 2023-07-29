@@ -24,20 +24,20 @@ public class AccountUserSearchServiceImpl extends TopServiceComponent implements
     @Override
     @Transactional(readOnly = true)
     public UserDto search(String keyword) {
-        User user;
+        User searchedUser;
 
         if (isPhoneNumber(keyword)) {
-            user = userRepository.findByPhoneNum(keyword)
+            searchedUser = userRepository.findByPhoneNum(keyword)
                     .orElse(null);
-            if (user == null || user.getAccount() == null) return null;
+            if (searchedUser == null || searchedUser.getAccount() == null) return null;
         } else {
             Account account = accountRepository.findByNumber(keyword)
                     .orElse(null);
             if (account == null) return null;
-            user = account.getOwner();
+            searchedUser = account.getOwner();
         }
 
-        return UserDto.fromEntity(user);
+        return UserDto.fromEntity(searchedUser);
     }
 
     private boolean isPhoneNumber(String keyword) {
@@ -45,6 +45,13 @@ public class AccountUserSearchServiceImpl extends TopServiceComponent implements
             // 키워드를 입력하지 않은 경우
             throw new BadRequestException("검색할 키워드를 입력해주세요");
         }
-        return keyword.startsWith("010");
+        if (keyword.startsWith("010")) {
+            if (isInvalidPhoneNumPattern(keyword)) {
+                // 휴대폰번호가 올바른 패턴이 아닌 경우
+                throw new BadRequestException("올바른 휴대폰번호로 입력해주세요");
+            }
+            return true;
+        }
+        return false;
     }
 }
