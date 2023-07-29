@@ -20,6 +20,7 @@ import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +36,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     private final PasswordEncoderService passwordEncoderService;
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto deposit(Deposit.Request request) {
         User user = userRepository.findById(loginId())
@@ -60,7 +61,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto withdrawal(Withdrawal.Request request) {
         User user = userRepository.findById(loginId())
