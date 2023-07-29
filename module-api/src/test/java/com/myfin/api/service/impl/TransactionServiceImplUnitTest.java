@@ -67,10 +67,10 @@ class TransactionServiceImplUnitTest {
         assertEquals("txn_number", result.getNumber());
         assertEquals(1000L, result.getAmount());
         assertEquals(TransactionType.DEPOSIT, result.getType());
-        assertEquals(account.getNumber(), result.getRecipientAccountNumber());
         assertEquals(now, result.getTradedAt());
         assertEquals(account.getId(), result.getSender().getId());
         assertEquals(account.getNumber(), result.getSender().getNumber());
+        assertEquals(account.getNumber(), result.getReceiver().getNumber());
     }
 
     @Test
@@ -210,10 +210,10 @@ class TransactionServiceImplUnitTest {
         assertEquals("txn_number", result.getNumber());
         assertEquals(1000L, result.getAmount());
         assertEquals(TransactionType.WITHDRAWAL, result.getType());
-        assertEquals(account.getNumber(), result.getRecipientAccountNumber());
         assertEquals(now, result.getTradedAt());
         assertEquals(account.getId(), result.getSender().getId());
         assertEquals(account.getNumber(), result.getSender().getNumber());
+        assertEquals(account.getNumber(), result.getReceiver().getNumber());
         assertEquals(9000L, account.getBalance());
     }
 
