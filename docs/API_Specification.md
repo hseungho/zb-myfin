@@ -114,14 +114,14 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - 캐시저장소 => 휴대폰번호에 대한 인증코드 삭제
 - 요청/응답 구조
     - 요청
-    ```json
+    ```
     {
       "phoneNum": "01012341234",
       "code": "123456"
     }
     ```
     - 응답
-    ```json
+    ```
     // 성공 시
     {
       "result": true,
@@ -260,7 +260,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - ACCOUNT 엔티티 (계좌번호, 계좌비밀번호, 잔액, 생성일시, 최근수정일시)
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -315,7 +315,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - ACCOUNT.삭제일시 -> 서버 현재시간
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -363,7 +363,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - ACCOUNT.잔액 -> + 입금액
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -422,7 +422,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - ACCOUNT.잔액 -> - 출금액
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -478,7 +478,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - 없음
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -524,7 +524,7 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
   - 없음
 - 요청/응답 구조
   - 요청
-    ```json
+    ```
     // HEADER
     {
       "Authorization": "Bearer access_token"
@@ -548,3 +548,129 @@ API의 자세한 정보를 보고 싶다면, 각 API 좌측에 위치한 토글 
 </details>
 
 ## 거래 관련 API
+<!-- 송금 API -->
+<br>
+<details>
+<summary style="font-size: large; font-weight: bold">송금 API</summary>
+
+### 검토한 정보
+```
+- POST /api/v1/transfer
+- 파라미터: 액세스토큰, 계좌번호, 계좌비밀번호, 수취자 계좌번호 또는 휴대폰번호, 송금액
+- 정책
+  - 실패 응답 정책
+    - 액세스토큰이 없거나 유효하지 않은 경우 -> 401 Unauthorized
+    - 이미 탈퇴된 유저인 경우 -> 401 Unauthorized
+    - 필수 파라미터(계좌번호, 계좌비밀번호, 수취자 계좌번호 또는 휴대폰번호, 송금액)가 없는 경우 -> 400 BadRequest
+    - 송금액이 0원 이하인 경우 -> 400 BadRequest
+    - 해당 유저가 계좌를 보유하고 있지 않은 경우 -> 404 NotFound
+    - 해당 유저의 계좌의 계좌번호와 요청 계좌번호가 일치하지 않는 경우 -> 403 Forbidden
+    - 해당 유저의 계좌의 계좌비밀번호와 요청 계좌비밀번호가 일치하지 않는 경우 -> 403 Forbidden
+    - 해당 유저의 계좌의 잔액이 송금액보다 적은 경우 -> 404 BadRequest
+    - 수취자 계좌번호에 해당하는 계좌가 존재하지 않는 경우 -> 404 NotFound
+    - 수취자 휴대폰번호에 해당하는 유저가 존재하지 않는 경우 -> 404 NotFound
+    - 수취자 휴대폰번호에 해당하는 유저의 계좌가 존재하지 않는 경우 -> 404 NotFound
+- 성공 응답: 계좌정보(계좌번호, 잔액), 거래정보(거래번호, 거래금액, 수취자 성명, 거래타입, 거래일시)
+```
+
+### 상세 검토
+- 저장이 필요한 정보
+  - 없음
+- 요청/응답 구조
+  - 요청
+    ```
+    // HEADER
+    {
+      "Authorization": "Bearer access_token"
+    }
+    // BODY
+    {
+      "accountNumber": "1234123412341234",
+      "accountPassword": "1234",
+      "receiver": "4321432143214321" | "01043214321",
+      "amount": 10000
+    }
+    ```
+  - 응답
+    ```json
+    {
+      "meta": {
+        "result": true
+      },
+      "document": {
+        "userName": "테스터"
+      }
+    }
+    ```
+</details>
+
+<!-- 거래 이력 조회 API -->
+<br>
+<details>
+<summary style="font-size: large; font-weight: bold">거래 이력 조회 API</summary>
+
+### 검토한 정보
+```
+- GET /api/v1/transfer/history
+- 파라미터: 액세스토큰, 계좌번호, 계좌비밀번호
+- 정책
+  - 실패 응답 정책
+    - 액세스토큰이 없거나 유효하지 않은 경우 -> 401 Unauthorized
+    - 이미 탈퇴된 유저인 경우 -> 401 Unauthorized
+    - 필수 파라미터(계좌번호, 계좌비밀번호)가 없는 경우 -> 400 BadRequest
+    - 해당 유저가 계좌를 보유하고 있지 않은 경우 -> 404 NotFound
+    - 해당 유저의 계좌의 계좌번호와 요청 계좌번호가 일치하지 않는 경우 -> 403 Forbidden
+    - 해당 유저의 계좌의 계좌비밀번호와 요청 계좌비밀번호가 일치하지 않는 경우 -> 403 Forbidden
+- 성공 응답: 
+  List<유저정보(성명), 계좌정보(계좌번호), 거래정보(거래번호, 거래금액, 수취자 이름, 거래타입, 거래일시)>, 
+  메타정보(페이지수, 사이즈수, 반환데이터크기, 처음페이지여부, 마지막페이지여부, 다음페이지여부, 이전페이지여부)
+```
+
+### 상세 검토
+- 저장이 필요한 정보
+  - 없음
+- 요청/응답 구조
+  - 요청
+    ```
+    // HEADER
+    {
+      "Authorization": "Bearer access_token"
+    }
+    // BODY
+    {
+      "accountNumber": "1234123412341234",
+      "accountPassword": "1234"
+    }
+    ```
+  - 응답
+    ```json
+    {
+      "meta": {
+        "page": 0,
+        "size": 10,
+        "numOfElements": 10,
+        "isFirst": true,
+        "isLast": true,
+        "hasNextPage": false,
+        "hasPreviousPage": false
+      },
+      "documents": [
+        {
+          "user": {
+            "name": "테스터"
+          },
+          "account": {
+            "number": "1234123412341234"
+          },
+          "transaction": {
+            "number": "ABCDEFGHIJ1234567890",
+            "amount": 10000,
+            "receiverName": "수취자",
+            "type": "TRANSFER",
+            "tradedAt": "2023-07-01T12:12:00.123123"
+          }
+        }     
+      ]
+    }
+    ```
+</details>
