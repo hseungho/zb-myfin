@@ -1,10 +1,13 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.Deposit;
+import com.myfin.api.dto.Transfer;
 import com.myfin.api.dto.Withdrawal;
+import com.myfin.api.service.AccountUserSearchService;
 import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.TransactionService;
 import com.myfin.core.dto.TransactionDto;
+import com.myfin.core.dto.UserDto;
 import com.myfin.core.entity.Account;
 import com.myfin.core.entity.Transaction;
 import com.myfin.core.entity.User;
@@ -34,11 +37,13 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     private final TransactionRepository transactionRepository;
 
     private final PasswordEncoderService passwordEncoderService;
+    private final AccountUserSearchService accountUserSearchService;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto deposit(Deposit.Request request) {
+        log.info("login id -> {}", loginId());
         User user = userRepository.findById(loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
@@ -81,6 +86,28 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
                         )
                 )
         );
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public TransactionDto transfer(Transfer.Request request) {
+        User user = userRepository.findById(loginId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
+        Account senderAccount = user.getAccount();
+
+        String receiver = request.getReceiver();
+        UserDto receiverUserDto = accountUserSearchService.search(receiver);
+        User receiverUser = userRepository.findById(receiverUserDto.getId())
+                .orElseThrow(() -> new NotFoundException("수취자가 존재하지 않습니다"));
+        Account receiverAccount = receiverUser.getAccount();
+
+        validateTransferRequest(request, senderAccount, receiverAccount);
+
+        return null;
+    }
+
+    private void validateTransferRequest(Transfer.Request request, Account senderAccount, Account receiverAccount) {
+        
     }
 
     private void validateWithdrawalRequest(Withdrawal.Request request, Account account) {
@@ -140,4 +167,20 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
             throw new ForbiddenException("계좌번호가 일치하지 않습니다");
         }
     }
+
+    private boolean isPhoneNumber(String keyword) {
+        if (hasNotTexts(keyword)) {
+            // 수취자 정보를 입력하지 않은 경우
+            throw new BadRequestException("수취자 정보를 입력해주세요");
+        }
+        if (keyword.startsWith("010")) {
+            if (isInvalidPhoneNumPattern(keyword)) {
+                // 휴대폰번호가 올바른 패턴이 아닌 경우
+                throw new BadRequestException("올바른 휴대폰번호로 입력해주세요");
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

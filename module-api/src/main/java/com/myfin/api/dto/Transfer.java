@@ -52,15 +52,15 @@ public class Transfer {
         private static class TransactionResponse {
             private String number;
             private long amount;
-            private String receiverName;
             private String type;
+            private String receiverName;
             private String tradedAt;
             private static TransactionResponse fromDto(TransactionDto dto) {
                 return TransactionResponse.builder()
                         .number(dto.getNumber())
                         .amount(dto.getAmount())
-                        .receiverName(dto.getReceiver().getOwner().getName())
                         .type(dto.getType().name())
+                        .receiverName(dto.getReceiver().getOwner().getName())
                         .tradedAt(getDateTimeIfPresent(dto.getTradedAt()))
                         .build();
             }

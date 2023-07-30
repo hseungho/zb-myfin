@@ -35,7 +35,9 @@ public class TransactionController {
     @PostMapping("/transfer")
     @ResponseStatus(HttpStatus.OK)
     public Transfer.Response transfer(@RequestBody @Valid Transfer.Request request) {
-        return Transfer.Response.fromDto();
+        return Transfer.Response.fromDto(
+                transactionService.transfer(request)
+        );
     }
 
 }
