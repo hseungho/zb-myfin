@@ -1,10 +1,12 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.Deposit;
+import com.myfin.api.dto.Transfer;
 import com.myfin.api.dto.Withdrawal;
-import com.myfin.api.service.TopServiceComponent;
+import com.myfin.api.service.AccountUserSearchService;
 import com.myfin.api.service.TransactionService;
 import com.myfin.core.dto.TransactionDto;
+import com.myfin.core.dto.UserDto;
 import com.myfin.core.entity.Account;
 import com.myfin.core.entity.Transaction;
 import com.myfin.core.entity.User;
@@ -15,6 +17,8 @@ import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.repository.TransactionRepository;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
+import com.myfin.core.util.SecurityUtil;
+import com.myfin.core.util.ValidUtil;
 import com.myfin.redis.lock.AccountLock;
 import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
@@ -87,7 +91,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public TransactionDto transfer(Transfer.Request request) {
-        User user = userRepository.findById(loginId())
+        User user = userRepository.findById(SecurityUtil.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
         Account senderAccount = user.getAccount();
 
@@ -165,12 +169,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private boolean isPhoneNumber(String keyword) {
-        if (hasNotTexts(keyword)) {
+        if (ValidUtil.hasNotTexts(keyword)) {
             // 수취자 정보를 입력하지 않은 경우
             throw new BadRequestException("수취자 정보를 입력해주세요");
         }
         if (keyword.startsWith("010")) {
-            if (isInvalidPhoneNumPattern(keyword)) {
+            if (ValidUtil.isInvalidPhoneNumPattern(keyword)) {
                 // 휴대폰번호가 올바른 패턴이 아닌 경우
                 throw new BadRequestException("올바른 휴대폰번호로 입력해주세요");
             }
