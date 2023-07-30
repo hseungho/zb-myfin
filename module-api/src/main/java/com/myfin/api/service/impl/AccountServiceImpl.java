@@ -4,7 +4,6 @@ import com.myfin.api.dto.CreateAccount;
 import com.myfin.api.dto.DeleteAccount;
 import com.myfin.api.dto.FindMyAccount;
 import com.myfin.api.service.AccountService;
-import com.myfin.api.service.TopServiceComponent;
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.entity.Account;
 import com.myfin.core.entity.User;
@@ -15,6 +14,8 @@ import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.repository.AccountRepository;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
+import com.myfin.core.util.SecurityUtil;
+import com.myfin.core.util.ValidUtil;
 import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AccountServiceImpl extends TopServiceComponent implements AccountService {
+public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
@@ -44,7 +45,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
                                 generateAccountNumber(),
                                 passwordEncoderService.encode(request.getAccountPassword()),
                                 request.getInitialBalance()
-                        ).associate(loginUser())
+                        ).associate(SecurityUtil.loginUser())
                 )
         );
     }
@@ -52,7 +53,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     @Override
     @Transactional
     public AccountDto deleteAccount(DeleteAccount.Request request) {
-        User user = userRepository.findById(loginId())
+        User user = userRepository.findById(SecurityUtil.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
         Account account = user.getAccount();
@@ -67,7 +68,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     @Override
     @Transactional(readOnly = true)
     public AccountDto findMyAccount(FindMyAccount.Request request) {
-        User user = userRepository.findById(loginId())
+        User user = userRepository.findById(SecurityUtil.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
         Account account = user.getAccount();
@@ -78,11 +79,11 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     }
 
     private void validateFindMyAccountRequest(FindMyAccount.Request request, Account account) {
-        if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
+        if (ValidUtil.hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
             // 계좌번호 또는 계좌비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호와 계좌비밀번호 모두 입력해주세요");
         }
-        if (account == null) {
+        if (ValidUtil.isNull(account)) {
             // 유저가 계좌를 보유하고 있지 않은 경우
             throw new NotFoundException("계좌를 보유하고 있지 않습니다");
         }
@@ -90,7 +91,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
             // 계좌가 이미 삭제된 경우
             throw new NotFoundException("이미 삭제된 계좌입니다");
         }
-        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+        if (ValidUtil.isMismatch(request.getAccountNumber(), account.getNumber())) {
             // 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
             throw new ForbiddenException("계좌번호가 일치하지 않습니다");
         }
@@ -101,11 +102,11 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     }
 
     private void validateDeleteAccountRequest(DeleteAccount.Request request, Account account) {
-        if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
+        if (ValidUtil.hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
             // 계좌 삭제를 위한 계좌번호 또는 계좌비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호와 계좌비밀번호 모두 입력해주세요");
         }
-        if (account == null) {
+        if (ValidUtil.isNull(account)) {
             // 사용자가 계좌를 가지고 있지 않은 경우
             throw new NotFoundException("계좌를 보유하고 있지 않습니다");
         }
@@ -113,7 +114,7 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
             // 이미 계좌가 삭제된 경우
             throw new NotFoundException("이미 삭제된 계좌입니다");
         }
-        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+        if (ValidUtil.isMismatch(request.getAccountNumber(), account.getNumber())) {
             // 계좌 삭제 시 요청 계좌번호와 유저의 계좌번호가 불일치한 경우
             throw new ForbiddenException("해당 계좌번호는 유저님의 계좌번호가 아닙니다");
         }
@@ -140,15 +141,15 @@ public class AccountServiceImpl extends TopServiceComponent implements AccountSe
     }
 
     private void validateCreateAccountRequest(CreateAccount.Request request) {
-        if (hasNotTexts(request.getAccountPassword())) {
+        if (ValidUtil.hasNotTexts(request.getAccountPassword())) {
             // 계좌 생성을 위한 계좌 비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌 비밀번호를 입력해주세요");
         }
-        if (isInvalidAccountPassword(request.getAccountPassword())) {
+        if (ValidUtil.isInvalidAccountPassword(request.getAccountPassword())) {
             // 계좌 생성을 위한 계좌 비밀번호의 형식이 올바르지 않은 경우
             throw new BadRequestException("계좌 비밀번호는 연속으로 중복되지 않는 4자리 숫자여야 합니다");
         }
-        if (hasAccount(loginUser())) {
+        if (hasAccount(SecurityUtil.loginUser())) {
             // 계좌 생성 시 해당 유저가 이미 계좌를 보유하고 있는 경우
             throw new BadRequestException("이미 계좌를 보유하고 있습니다");
         }
