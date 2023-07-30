@@ -1,5 +1,6 @@
 package com.myfin.api.dto;
 
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -15,12 +16,11 @@ public class Login {
         private String password;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private String accessToken;
         private String refreshToken;
         private String lastLoggedInAt;
@@ -29,7 +29,7 @@ public class Login {
             return Response.builder()
                     .accessToken(dto.getAccessToken())
                     .refreshToken(dto.getRefreshToken())
-                    .lastLoggedInAt(getDateTimeIfPresent(dto.getLastLoggedInAt()))
+                    .lastLoggedInAt(DateUtil.getDateTimeIfPresent(dto.getLastLoggedInAt()))
                     .build();
         }
     }

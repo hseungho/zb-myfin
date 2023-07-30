@@ -1,6 +1,7 @@
 package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -19,12 +20,11 @@ public class FindMyAccount {
         private String accountPassword;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private AccountResponse account;
         public static Response fromDto(AccountDto dto) {
             return Response.builder()
@@ -45,8 +45,8 @@ public class FindMyAccount {
                 return AccountResponse.builder()
                         .number(dto.getNumber())
                         .balance(dto.getBalance())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
-                        .updatedAt(getDateTimeIfPresent(dto.getUpdatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
+                        .updatedAt(DateUtil.getDateTimeIfPresent(dto.getUpdatedAt()))
                         .build();
             }
         }

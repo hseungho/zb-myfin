@@ -1,6 +1,7 @@
 package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -19,12 +20,11 @@ public class DeleteAccount {
         private String accountPassword;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private String accountNumber;
         private String createdAt;
         private String deletedAt;
@@ -32,8 +32,8 @@ public class DeleteAccount {
         public static Response fromDto(AccountDto dto) {
             return Response.builder()
                     .accountNumber(dto.getNumber())
-                    .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
-                    .deletedAt(getDateTimeIfPresent(dto.getDeletedAt()))
+                    .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
+                    .deletedAt(DateUtil.getDateTimeIfPresent(dto.getDeletedAt()))
                     .build();
         }
     }
