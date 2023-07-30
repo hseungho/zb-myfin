@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class SeoulDateTime {
+    private SeoulDateTime() {}
 
     /**
      * LocalDateTime 의 Zone 을 Asia/Seoul 로 지정하여 현재 시간을 반환.

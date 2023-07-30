@@ -2,7 +2,6 @@ package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.Deposit;
 import com.myfin.api.dto.Withdrawal;
-import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.TransactionService;
 import com.myfin.core.dto.TransactionDto;
 import com.myfin.core.entity.Account;
@@ -15,6 +14,8 @@ import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.repository.TransactionRepository;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
+import com.myfin.core.util.SecurityUtil;
+import com.myfin.core.util.ValidUtil;
 import com.myfin.redis.lock.AccountLock;
 import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TransactionServiceImpl extends TopServiceComponent implements TransactionService {
+public class TransactionServiceImpl implements TransactionService {
 
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
@@ -39,7 +40,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto deposit(Deposit.Request request) {
-        User user = userRepository.findById(loginId())
+        User user = userRepository.findById(SecurityUtil.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
         Account account = user.getAccount();
@@ -64,7 +65,7 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @AccountLock(key = "#request.getAccountNumber()")
     public TransactionDto withdrawal(Withdrawal.Request request) {
-        User user = userRepository.findById(loginId())
+        User user = userRepository.findById(SecurityUtil.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다"));
 
         Account account = user.getAccount();
@@ -86,19 +87,19 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     }
 
     private void validateWithdrawalRequest(Withdrawal.Request request, Account account) {
-        if (hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
+        if (ValidUtil.hasNotTexts(request.getAccountNumber(), request.getAccountPassword())) {
             // 계좌번호 및 계좌비밀번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호 및 계좌비밀번호를 모두 입력해주세요");
         }
-        if (isLessThanEqualsToZero(request.getAmount())) {
+        if (ValidUtil.isLessThanEqualsToZero(request.getAmount())) {
             // 출금액이 0보다 작거나 같은 경우
             throw new BadRequestException("출금액을 1원 이상 입력해주세요");
         }
-        if (account == null) {
+        if (ValidUtil.isNull(account)) {
             // 유저가 계좌를 보유하고 있지 않은 경우
             throw new NotFoundException("계좌를 보유하고 있지 않습니다");
         }
-        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+        if (ValidUtil.isMismatch(request.getAccountNumber(), account.getNumber())) {
             // 요청 계좌번호와 유저 계좌의 계좌번호가 일치하지 않는 경우
             throw new ForbiddenException("계좌번호가 일치하지 않습니다");
         }
@@ -125,19 +126,19 @@ public class TransactionServiceImpl extends TopServiceComponent implements Trans
     }
 
     private void validateDepositRequest(Deposit.Request request, Account account) {
-        if (hasNotTexts(request.getAccountNumber())) {
+        if (ValidUtil.hasNotTexts(request.getAccountNumber())) {
             // 계좌번호를 입력하지 않은 경우
             throw new BadRequestException("계좌번호를 입력해주세요");
         }
-        if (isLessThanEqualsToZero(request.getAmount())) {
+        if (ValidUtil.isLessThanEqualsToZero(request.getAmount())) {
             // 입금액이 0보다 작거나 같은 경우
             throw new BadRequestException("입금액을 1원 이상 입력해주세요");
         }
-        if (account == null) {
+        if (ValidUtil.isNull(account)) {
             // 유저가 계좌를 보유하고 있지 않은 경우
             throw new NotFoundException("계좌를 보유하고 있지 않습니다");
         }
-        if (isMismatch(request.getAccountNumber(), account.getNumber())) {
+        if (ValidUtil.isMismatch(request.getAccountNumber(), account.getNumber())) {
             // 요청 계좌번호와 계좌의 계좌번호가 일치하지 않는 경우
             throw new ForbiddenException("계좌번호가 일치하지 않습니다");
         }

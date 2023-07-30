@@ -1,13 +1,13 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.dto.TokenDto;
-import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.UserLoginService;
 import com.myfin.core.entity.User;
 import com.myfin.core.exception.impl.BadRequestException;
 import com.myfin.core.exception.impl.NotFoundException;
 import com.myfin.core.exception.impl.UnauthorizedException;
 import com.myfin.core.repository.UserRepository;
+import com.myfin.core.util.ValidUtil;
 import com.myfin.security.jwt.JwtComponent;
 import com.myfin.security.service.PasswordEncoderService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserLoginServiceImpl extends TopServiceComponent implements UserLoginService {
+public class UserLoginServiceImpl implements UserLoginService {
 
     private final UserRepository userRepository;
 
@@ -61,7 +61,7 @@ public class UserLoginServiceImpl extends TopServiceComponent implements UserLog
     }
 
     private void validateLoginRequest(String userId, String password) {
-        if (hasNotTexts(userId, password)) {
+        if (ValidUtil.hasNotTexts(userId, password)) {
             // 로그인을 위한 필수 정보를 요청하지 않은 경우
             throw new BadRequestException("아이디와 비밀번호를 모두 입력해주세요");
         }

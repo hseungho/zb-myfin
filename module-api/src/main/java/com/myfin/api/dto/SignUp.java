@@ -1,6 +1,7 @@
 package com.myfin.api.dto;
 
 import com.myfin.core.dto.UserDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -39,12 +40,11 @@ public class SignUp {
         private String email;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private String userId;
         private String userName;
         private String createdAt;
@@ -53,7 +53,7 @@ public class SignUp {
             return Response.builder()
                     .userId(dto.getUserId())
                     .userName(dto.getName())
-                    .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                    .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                     .build();
         }
     }

@@ -2,6 +2,7 @@ package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.dto.UserDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -18,12 +19,11 @@ public class CreateAccount {
         private Long initialBalance = 0L;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private UserResponse user;
         private AccountResponse account;
 
@@ -49,7 +49,7 @@ public class CreateAccount {
                         .name(dto.getName())
                         .phoneNum(dto.getPhoneNum())
                         .email(dto.getEmail())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                         .build();
             }
         }
@@ -67,7 +67,7 @@ public class CreateAccount {
                 return AccountResponse.builder()
                         .number(dto.getNumber())
                         .balance(dto.getBalance())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                         .build();
             }
         }

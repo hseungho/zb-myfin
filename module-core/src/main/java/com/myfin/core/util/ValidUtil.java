@@ -1,26 +1,21 @@
-package com.myfin.api.service;
+package com.myfin.core.util;
 
-import com.myfin.core.entity.User;
-import com.myfin.core.util.SeoulDate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-/**
- * TopServiceComponent 클래스는 Service 클래스들의 최상위 클래스로써, <br>
- * 다수의 Service 클래스에서 사용되는 기능들을 정의하도록 한 클래스이다.
- */
-public class TopServiceComponent {
+public class ValidUtil {
+    private ValidUtil() {}
+
 
     /**
      * 파라미터가 null인지 확인.
      * @param args 확인할 Object 변수(들)
      * @return null이라면 true
      */
-    protected boolean isNull(Object... args) {
+    public static boolean isNull(Object... args) {
         for (Object arg : args) {
             if (arg == null) {
                 return true;
@@ -35,7 +30,7 @@ public class TopServiceComponent {
      * @param targets 확인할 파라미터(들)
      * @return 기준 최솟값보다 작거나 같으면 true
      */
-    protected boolean isLessThanEquals(long min, Long... targets) {
+    public static boolean isLessThanEquals(long min, Long... targets) {
         for (Long var : targets) {
             if (var <= min) {
                 return true;
@@ -49,7 +44,7 @@ public class TopServiceComponent {
      * @param targets 확인할 파라미터(들)
      * @return 0보다 작거나 같으면 true
      */
-    protected boolean isLessThanEqualsToZero(Long...targets) {
+    public static boolean isLessThanEqualsToZero(Long...targets) {
         return isLessThanEquals(0L, targets);
     }
 
@@ -58,7 +53,7 @@ public class TopServiceComponent {
      * @param args 확인할 String 변수(들)
      * @return null이 아니면서 blank가 아니라면 true
      */
-    protected boolean hasTexts(String... args) {
+    public static boolean hasTexts(String... args) {
         for (String arg : args) {
             if (!StringUtils.hasText(arg)) {
                 return false;
@@ -72,7 +67,7 @@ public class TopServiceComponent {
      * @param args 확인할 String 변수(들)
      * @return null 또는 blank라면 true
      */
-    protected boolean hasNotTexts(String... args) {
+    public static boolean hasNotTexts(String... args) {
         for (String arg : args) {
             if (!StringUtils.hasText(arg)) {
                 return true;
@@ -87,7 +82,7 @@ public class TopServiceComponent {
      * @param o2 확인할 파라미터 2
      * @return 두 파라미터가 일치하면 true
      */
-    protected boolean isMatch(Object o1, Object o2) {
+    public static boolean isMatch(Object o1, Object o2) {
         return Objects.equals(o1, o2);
     }
 
@@ -97,7 +92,7 @@ public class TopServiceComponent {
      * @param o2 확인할 파라미터 2
      * @return 두 파라미터가 불일치하면 true
      */
-    protected boolean isMismatch(Object o1, Object o2) {
+    public static boolean isMismatch(Object o1, Object o2) {
         return !isMatch(o1, o2);
     }
 
@@ -106,7 +101,7 @@ public class TopServiceComponent {
      * @param phoneNum 확인할 휴대폰번호
      * @return 올바른 형식이라면 true
      */
-    protected boolean isValidPhoneNumPattern(String phoneNum) {
+    public static boolean isValidPhoneNumPattern(String phoneNum) {
         String regex = "^010[.-]?(\\d{4})[.-]?(\\d{4})$";
         return Pattern.matches(regex, phoneNum);
     }
@@ -116,7 +111,7 @@ public class TopServiceComponent {
      * @param phoneNum 확인할 휴대폰번호
      * @return 올바르지 않은 형식이라면 true
      */
-    protected boolean isInvalidPhoneNumPattern(String phoneNum) {
+    public static boolean isInvalidPhoneNumPattern(String phoneNum) {
         return !isValidPhoneNumPattern(phoneNum);
     }
 
@@ -129,7 +124,7 @@ public class TopServiceComponent {
      * @param password 유저패스워드
      * @return 올바른 형식이라면 true
      */
-    protected boolean isValidPassword(String userId, String password) {
+    public static boolean isValidPassword(String userId, String password) {
         String regex = "^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z]).{8,100}$";
         return Pattern.matches(regex, password) && !password.contains(userId) && !password.contains(" ");
     }
@@ -143,7 +138,7 @@ public class TopServiceComponent {
      * @param password 유저패스워드
      * @return 올바르지 않은 형식이라면 true
      */
-    protected boolean isInvalidPassword(String userId, String password) {
+    public static boolean isInvalidPassword(String userId, String password) {
         return !isValidPassword(userId, password);
     }
 
@@ -152,7 +147,7 @@ public class TopServiceComponent {
      * @param date 요청일자
      * @return 요청일자가 서버 현재일자보다 이후라면 true
      */
-    protected boolean isAfterThanNow(LocalDate date) {
+    public static boolean isAfterThanNow(LocalDate date) {
         return date.isAfter(SeoulDate.now());
     }
 
@@ -161,7 +156,7 @@ public class TopServiceComponent {
      * @param email 확인할 이메일주소
      * @return 올바른 형식이라면 true
      */
-    protected boolean isValidEmailPattern(String email) {
+    public static boolean isValidEmailPattern(String email) {
         String regex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
         return Pattern.matches(regex, email);
     }
@@ -171,7 +166,7 @@ public class TopServiceComponent {
      * @param email 확인할 이메일주소
      * @return 올바르지 않은 형식이라면 true
      */
-    protected boolean isInvalidEmailPattern(String email) {
+    public static boolean isInvalidEmailPattern(String email) {
         return !isValidEmailPattern(email);
     }
 
@@ -180,7 +175,7 @@ public class TopServiceComponent {
      * @param password
      * @return
      */
-    protected boolean isInvalidAccountPassword(String password) {
+    public static boolean isInvalidAccountPassword(String password) {
         if (password.length() != 4)
             return true;
         if (isNaN(password))
@@ -196,7 +191,7 @@ public class TopServiceComponent {
      * @param number 확인할 String 변수
      * @return 중복된 문자가 존재하다면 true
      */
-    private boolean isExistDuplicateNumbersInRow(String number) {
+    private static boolean isExistDuplicateNumbersInRow(String number) {
         for (int i = 0; i < number.length() - 1; i++) {
             char c1 = number.charAt(i);
             char c2 = number.charAt(i + 1);
@@ -212,7 +207,7 @@ public class TopServiceComponent {
      * @param number 확인할 String 변수
      * @return 올바른 숫자라면 true
      */
-    protected boolean isNaN(String number) {
+    public static boolean isNaN(String number) {
         if (number == null || "".equals(number))
             return false;
 
@@ -237,24 +232,8 @@ public class TopServiceComponent {
      * @param phoneNum '-'를 제거할 휴대폰번호
      * @return 휴대폰번호
      */
-    protected String convertPhoneNum(String phoneNum) {
+    public static String convertPhoneNum(String phoneNum) {
         return phoneNum.strip().replace("-", "");
     }
-
-    /**
-     * 로그인 유저의 `User` 객체를 반환.
-     * @return 로그인 유저의 `User` 객체
-     */
-    protected User loginUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    /**
-     * 로그인 유저의 PK ID를 반환.
-     * @return 로그인 유저의 PK ID
-     */
-    protected String loginId() {
-        return this.loginUser().getId();
-    }
-
+    
 }

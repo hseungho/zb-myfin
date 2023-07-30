@@ -4,7 +4,6 @@ import com.myfin.adapter.coolsms.SMSMessageComponent;
 import com.myfin.api.dto.SignUp;
 import com.myfin.api.dto.VerifyIdentity;
 import com.myfin.api.dto.VerifyIdentityResultDto;
-import com.myfin.api.service.TopServiceComponent;
 import com.myfin.api.service.UserSignUpService;
 import com.myfin.core.dto.UserDto;
 import com.myfin.core.entity.User;
@@ -12,6 +11,7 @@ import com.myfin.core.exception.impl.BadRequestException;
 import com.myfin.core.repository.UserRepository;
 import com.myfin.core.util.Generator;
 import com.myfin.core.util.SeoulDateTime;
+import com.myfin.core.util.ValidUtil;
 import com.myfin.redis.entity.CacheVerified;
 import com.myfin.redis.entity.CacheVerifyCode;
 import com.myfin.redis.repository.CacheVerifiedRepository;
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserSignUpServiceImpl extends TopServiceComponent implements UserSignUpService {
+public class UserSignUpServiceImpl implements UserSignUpService {
 
     private final UserRepository userRepository;
     private final CacheVerifyCodeRepository cacheVerifyCodeRepository;
@@ -52,7 +52,7 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
         // 요청 검증
         validateSendPhoneMessageRequest(requestedPhoneNum);
 
-        final String phoneNum = convertPhoneNum(requestedPhoneNum);
+        final String phoneNum = ValidUtil.convertPhoneNum(requestedPhoneNum);
 
         // 인증코드 캐시 저장소에서 휴대폰번호로 조회 후 존재하면 삭제
         cacheVerifyCodeRepository.findById(phoneNum)
@@ -79,14 +79,14 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
 
         VerifyIdentityResultDto result = new VerifyIdentityResultDto();
 
-        final String phoneNum = convertPhoneNum(request.getPhoneNum());
+        final String phoneNum = ValidUtil.convertPhoneNum(request.getPhoneNum());
 
         // 인증코드 캐시 저장소에서 휴대폰번호로 조회
         cacheVerifyCodeRepository.findById(phoneNum)
                 .ifPresentOrElse(
                         // 인증코드 캐시 저장소에 인증정보가 있을 경우
                         it -> {
-                            if (isMatch(it.getCode(), request.getCode())) {
+                            if (ValidUtil.isMatch(it.getCode(), request.getCode())) {
                                 result.setResult(true);
                                 result.setMessage("인증되었습니다");
                                 cacheVerifyCodeRepository.delete(it);   // 인증코드 캐시 저장소에서 삭제
@@ -114,7 +114,7 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
         validateSignUpRequest(request);
 
         // 본인인증 여부 검증
-        final String phoneNum = convertPhoneNum(request.getPhoneNum());
+        final String phoneNum = ValidUtil.convertPhoneNum(request.getPhoneNum());
         validateVerified(phoneNum);
 
         // 패스워드 암호화
@@ -151,9 +151,9 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
     }
 
     private void validateSignUpRequest(SignUp.Request request) {
-        if (hasNotTexts(request.getUserId(), request.getPassword(), request.getUserName(),
+        if (ValidUtil.hasNotTexts(request.getUserId(), request.getPassword(), request.getUserName(),
                 request.getZipCode(), request.getAddress1(), request.getPhoneNum())
-            || isNull(request.getBirthDate())) {
+            || ValidUtil.isNull(request.getBirthDate())) {
             // 회원가입을 위한 필수 정보를 요청하지 않은 경우
             throw new BadRequestException("회원가입에 필요한 필수 정보를 모두 요청해주세요.");
         }
@@ -161,15 +161,15 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
             // 회원가입을 위한 유저아이디가 이미 존재하는 경우
             throw new BadRequestException("이미 존재하는 아이디입니다");
         }
-        if (isInvalidPassword(request.getUserId(), request.getPassword())) {
+        if (ValidUtil.isInvalidPassword(request.getUserId(), request.getPassword())) {
             // 회원가입을 위한 유저패스워드가 올바른 형식이 아닌 경우
             throw new BadRequestException("비밀번호는 영문자, 숫자, 특수문자를 조합하여 8자리 이상이어야 합니다");
         }
-        if (isAfterThanNow(request.getBirthDate())) {
+        if (ValidUtil.isAfterThanNow(request.getBirthDate())) {
             // 회원가입을 위한 유저생년월일이 오늘보다 이후인 경우
             throw new BadRequestException("생년월일이 오늘보다 이후일 수는 없습니다");
         }
-        if (isInvalidPhoneNumPattern(request.getPhoneNum())) {
+        if (ValidUtil.isInvalidPhoneNumPattern(request.getPhoneNum())) {
             // 회원가입을 위한 휴대폰번호가 올바른 형식이 아닌 경우
             throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
         }
@@ -177,36 +177,36 @@ public class UserSignUpServiceImpl extends TopServiceComponent implements UserSi
             // 회원가입을 위한 휴대폰번호가 이미 존재하는 경우
             throw new BadRequestException("이미 존재하는 휴대폰번호입니다");
         }
-        if (hasTexts(request.getEmail()) && isInvalidEmailPattern(request.getEmail())) {
+        if (ValidUtil.hasTexts(request.getEmail()) && ValidUtil.isInvalidEmailPattern(request.getEmail())) {
             // 회원가입을 위한 이메일 주소가 올바른 형식이 아닌 경우
             throw new BadRequestException("올바른 형식의 이메일주소를 입력해주세요.");
         }
     }
 
     private void validateVerifyIdentity(VerifyIdentity.Request request) {
-        if (hasNotTexts(request.getPhoneNum(), request.getCode())) {
+        if (ValidUtil.hasNotTexts(request.getPhoneNum(), request.getCode())) {
             // 본인확인을 위한 휴대폰번호나 인증코드를 요청하지 않은 경우
             throw new BadRequestException("본인확인을 위한 모든 정보를 요청해주세요.");
         }
-        if (isInvalidPhoneNumPattern(request.getPhoneNum())) {
+        if (ValidUtil.isInvalidPhoneNumPattern(request.getPhoneNum())) {
             // 휴대폰번호가 올바른 형식의 휴대폰번호가 아닌 경우
             throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
         }
     }
 
     private void validateCheckUserIdAvailableRequest(String userId) {
-        if (hasNotTexts(userId)) {
+        if (ValidUtil.hasNotTexts(userId)) {
             // 중복확인을 위한 유저아이디를 요청하지 않은 경우
             throw new BadRequestException("중복확인할 아이디를 입력해주세요.");
         }
     }
 
     private void validateSendPhoneMessageRequest(String phoneNum) {
-        if (hasNotTexts(phoneNum)) {
+        if (ValidUtil.hasNotTexts(phoneNum)) {
             // 본인인증 문자요청을 위한 휴대폰번호를 요청하지 않은 경우
             throw new BadRequestException("휴대폰번호를 입력해주세요.");
         }
-        if (isInvalidPhoneNumPattern(phoneNum)) {
+        if (ValidUtil.isInvalidPhoneNumPattern(phoneNum)) {
             // 휴대폰번호가 올바른 형식의 휴대폰번호가 아닌 경우
             throw new BadRequestException("올바른 형식의 휴대폰번호를 입력해주세요.");
         }

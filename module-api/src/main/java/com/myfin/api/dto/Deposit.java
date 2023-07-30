@@ -2,6 +2,7 @@ package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.dto.TransactionDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,12 +22,11 @@ public class Deposit {
         private Long amount;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response extends TopResponse {
+    public static class Response {
         private AccountResponse account;
         private TransactionResponse transaction;
 
@@ -51,8 +51,8 @@ public class Deposit {
                 return AccountResponse.builder()
                         .number(dto.getNumber())
                         .balance(dto.getBalance())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
-                        .updatedAt(getDateTimeIfPresent(dto.getUpdatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
+                        .updatedAt(DateUtil.getDateTimeIfPresent(dto.getUpdatedAt()))
                         .build();
             }
         }
@@ -72,7 +72,7 @@ public class Deposit {
                         .number(dto.getNumber())
                         .amount(dto.getAmount())
                         .type(dto.getType().name())
-                        .tradedAt(getDateTimeIfPresent(dto.getTradedAt()))
+                        .tradedAt(DateUtil.getDateTimeIfPresent(dto.getTradedAt()))
                         .build();
             }
         }
