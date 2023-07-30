@@ -2,12 +2,16 @@ package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.dto.UserDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class CreateAccount {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotNull(message = "계좌비밀번호를 입력해주세요")
         @NotBlank(message = "계좌비밀번호를 입력해주세요")
@@ -15,9 +19,11 @@ public class CreateAccount {
         private Long initialBalance = 0L;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends TopResponse {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Response {
         private UserResponse user;
         private AccountResponse account;
 
@@ -28,7 +34,10 @@ public class CreateAccount {
                     .build();
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class UserResponse {
             private String name;
             private String phoneNum;
@@ -40,12 +49,15 @@ public class CreateAccount {
                         .name(dto.getName())
                         .phoneNum(dto.getPhoneNum())
                         .email(dto.getEmail())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                         .build();
             }
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class AccountResponse {
             private String number;
             private long balance;
@@ -55,7 +67,7 @@ public class CreateAccount {
                 return AccountResponse.builder()
                         .number(dto.getNumber())
                         .balance(dto.getBalance())
-                        .createdAt(getDateTimeIfPresent(dto.getCreatedAt()))
+                        .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                         .build();
             }
         }

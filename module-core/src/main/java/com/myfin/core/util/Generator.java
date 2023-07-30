@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Generator {
+    private Generator() {}
 
     public static String generateVerifyCode() {
         return String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));

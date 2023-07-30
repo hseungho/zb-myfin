@@ -7,13 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
 public class SearchController {
 
     private final AccountUserSearchService accountUserSearchService;
 
-    @GetMapping("/search/accounts")
+    @GetMapping("/accounts")
     @ResponseStatus(HttpStatus.OK)
     public SearchAccount.Response searchAccount(@RequestParam(value = "param", required = true) final String keyword) {
         return SearchAccount.Response.fromDto(
