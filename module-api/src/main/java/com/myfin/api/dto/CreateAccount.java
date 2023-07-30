@@ -7,7 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class CreateAccount {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotNull(message = "계좌비밀번호를 입력해주세요")
         @NotBlank(message = "계좌비밀번호를 입력해주세요")
@@ -16,7 +19,10 @@ public class CreateAccount {
     }
 
     @EqualsAndHashCode(callSuper = true)
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response extends TopResponse {
         private UserResponse user;
         private AccountResponse account;
@@ -28,7 +34,10 @@ public class CreateAccount {
                     .build();
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class UserResponse {
             private String name;
             private String phoneNum;
@@ -45,7 +54,10 @@ public class CreateAccount {
             }
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class AccountResponse {
             private String number;
             private long balance;
