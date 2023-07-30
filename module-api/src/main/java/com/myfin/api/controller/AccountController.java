@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/accounts")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateAccount.Response createAccount(@RequestBody @Valid CreateAccount.Request request) {
         return CreateAccount.Response.fromDto(
@@ -24,7 +24,7 @@ public class AccountController {
         );
     }
 
-    @DeleteMapping("/accounts")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public DeleteAccount.Response deleteAccount(@RequestBody @Valid DeleteAccount.Request request) {
         return DeleteAccount.Response.fromDto(
@@ -32,7 +32,7 @@ public class AccountController {
         );
     }
 
-    @GetMapping("/accounts")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public FindMyAccount.Response findMyAccount(@RequestBody @Valid FindMyAccount.Request request) {
         return FindMyAccount.Response.fromDto(

@@ -30,27 +30,27 @@ public class H2DBInit {
     public void init() {
         try {
 
-            final String user_id = "tester";
-            final String user_pw = "password1234!";
-            final String user_name = "테스터";
-            final LocalDate birth_date = LocalDate.of(1997, 1, 1);
-            final boolean user_sex = false;
-            final String zip_code = "10001";
-            final String address_1 = "서울특별시 강남구 도산대로 17길";
-            final String address_2 = "10001호";
-            final String phone_num = "01012341234";
+            final String userId = "tester";
+            final String userPw = "password1234!";
+            final String userName = "테스터";
+            final LocalDate birthDate = LocalDate.of(1997, 1, 1);
+            final boolean userSex = false;
+            final String zipCode = "10001";
+            final String address1 = "서울특별시 강남구 도산대로 17길";
+            final String address2 = "10001호";
+            final String phoneNum = "01012341234";
             final String email = "tester@gmail.com";
 
             User user = User.create(
-                    user_id,
-                    passwordEncoderService.encode(user_pw),
-                    user_name,
-                    birth_date,
-                    user_sex,
-                    zip_code,
-                    address_1,
-                    address_2,
-                    phone_num,
+                    userId,
+                    passwordEncoderService.encode(userPw),
+                    userName,
+                    birthDate,
+                    userSex,
+                    zipCode,
+                    address1,
+                    address2,
+                    phoneNum,
                     email
             );
             Field id = user.getClass().getDeclaredField("id");
@@ -58,12 +58,12 @@ public class H2DBInit {
             id.set(user, "tester_id");
             userRepository.save(user);
 
-            final String acc_number = "1234123412341234";
-            final String acc_pw = "1234";
+            final String accNumber = "1234123412341234";
+            final String accPw = "1234";
             final Long balance = 100000L;
             Account account = Account.create(
-                    acc_number,
-                    passwordEncoderService.encode(acc_pw),
+                    accNumber,
+                    passwordEncoderService.encode(accPw),
                     balance
             ).associate(user);
             accountRepository.save(account);

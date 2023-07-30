@@ -8,7 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class Deposit {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotNull(message = "계좌번호를 입력해주세요")
         @NotBlank(message = "계좌번호를 입력해주세요")
@@ -19,7 +22,10 @@ public class Deposit {
     }
 
     @EqualsAndHashCode(callSuper = true)
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response extends TopResponse {
         private AccountResponse account;
         private TransactionResponse transaction;
@@ -31,7 +37,10 @@ public class Deposit {
                     .build();
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class AccountResponse {
             private String number;
             private long balance;
@@ -48,7 +57,10 @@ public class Deposit {
             }
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class TransactionResponse {
             private String number;
             private long amount;

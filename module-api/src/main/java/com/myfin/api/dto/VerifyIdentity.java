@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class VerifyIdentity {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotBlank(message = "휴대폰번호를 입력해주세요")
         private String phoneNum;
@@ -15,7 +18,10 @@ public class VerifyIdentity {
         private String code;
     }
 
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response {
         private boolean result;
         private String message;

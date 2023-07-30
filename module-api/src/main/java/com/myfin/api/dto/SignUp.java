@@ -10,7 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 public class SignUp {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotNull(message = "아이디를 입력해주세요")
         @NotBlank(message = "아이디를 입력해주세요")
@@ -37,7 +40,10 @@ public class SignUp {
     }
 
     @EqualsAndHashCode(callSuper = true)
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response extends TopResponse {
         private String userId;
         private String userName;

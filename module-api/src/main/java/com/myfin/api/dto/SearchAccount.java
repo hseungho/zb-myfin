@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class SearchAccount {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Response {
         private MetaResponse meta;
         private DocumentResponse document;
@@ -23,12 +26,18 @@ public class SearchAccount {
                             .build();
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class MetaResponse {
             private boolean result;
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class DocumentResponse {
             private String userName;
         }
