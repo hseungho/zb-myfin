@@ -2,13 +2,17 @@ package com.myfin.api.dto;
 
 import com.myfin.core.dto.AccountDto;
 import com.myfin.core.dto.TransactionDto;
+import com.myfin.core.util.DateUtil;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 public class Transfer {
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Request {
         @NotNull(message = "계좌번호를 입력해주세요")
         @NotBlank(message = "계좌번호를 입력해주세요")
@@ -24,9 +28,11 @@ public class Transfer {
         private Long amount;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class Response extends TopResponse {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Response {
         private AccountResponse account;
         private TransactionResponse transaction;
         public static Response fromDto(TransactionDto dto) {
@@ -36,7 +42,10 @@ public class Transfer {
                     .build();
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class AccountResponse {
             private String number;
             private long balance;
@@ -48,7 +57,10 @@ public class Transfer {
             }
         }
 
-        @Data @NoArgsConstructor @AllArgsConstructor @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
         private static class TransactionResponse {
             private String number;
             private long amount;
@@ -61,7 +73,7 @@ public class Transfer {
                         .amount(dto.getAmount())
                         .type(dto.getType().name())
                         .receiverName(dto.getReceiver().getOwner().getName())
-                        .tradedAt(getDateTimeIfPresent(dto.getTradedAt()))
+                        .tradedAt(DateUtil.getDateTimeIfPresent(dto.getTradedAt()))
                         .build();
             }
         }
