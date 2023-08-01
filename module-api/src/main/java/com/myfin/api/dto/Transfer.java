@@ -34,8 +34,9 @@ public class Transfer {
             return this.receiverAccountNumber;
         }
 
-        public void setReceiverAccountNumber(String receiverAccountNumber) {
+        public Transfer.Request setReceiverAccountNumber(String receiverAccountNumber) {
             this.receiverAccountNumber = receiverAccountNumber;
+            return this;
         }
 
         public String getAccountNumber() {

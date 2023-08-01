@@ -12,6 +12,7 @@ import com.myfin.core.exception.impl.BadRequestException
 import com.myfin.core.exception.impl.ForbiddenException
 import com.myfin.core.exception.impl.InternalServerException
 import com.myfin.core.exception.impl.NotFoundException
+import com.myfin.core.repository.AccountRepository
 import com.myfin.core.repository.TransactionRepository
 import com.myfin.core.repository.UserRepository
 import com.myfin.core.util.Generator
@@ -29,9 +30,9 @@ import java.util.concurrent.atomic.AtomicInteger
 @Service
 open class TransactionServiceImpl(
     private val userRepository: UserRepository,
+    private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionRepository,
     private val passwordEncoderService: PasswordEncoderService,
-    private val accountUserSearchService: AccountUserSearchService
 ) : TransactionService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -81,19 +82,15 @@ open class TransactionServiceImpl(
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    @TransferLock(sendKey = "#request.getAccountNumber()", receiveKey = "#request.getReceiver()")
+    @TransferLock(sendKey = "#request.getAccountNumber()", receiveKey = "#request.getReceiverAccountNumber()")
     override fun transfer(request: Transfer.Request): TransactionDto {
         val senderAccount : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
             .account
             ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
-        val receiverAccount = (accountUserSearchService.search(request.receiver)
-            ?: throw NotFoundException("수취자가 존재하지 않습니다")).let {
-                userRepository.findByIdOrNull(it.id)
-                    ?: throw NotFoundException("수취자가 존재하지 않습니다")
-            }.account
-            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
+        val receiverAccount: Account = accountRepository.findByNumber(request.receiverAccountNumber)
+            .orElseThrow { NotFoundException("수취자 계좌를 찾을 수 없습니다") }
 
         validateTransferRequest(request, senderAccount)
 
