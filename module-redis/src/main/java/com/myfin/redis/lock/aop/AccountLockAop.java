@@ -97,14 +97,14 @@ public class AccountLockAop {
             boolean availableSend = senderLock.tryLock(transferLock.waitTime(), transferLock.leaseTime(), transferLock.timeUnit());
             log.info("[MYFIN][AccountLockAop] Sender Account {} try Lock.", keyMasking(sendKey));
             if (!availableSend) {
-                log.info("[MYFIN][AccountLockAop] Sender Account {} failed trying Lock.", keyMasking(sendKey));
+                log.error("[MYFIN][AccountLockAop] Sender Account {} failed trying Lock.", keyMasking(sendKey));
                 return false;
             }
 
             boolean availableReceive = receiverLock.tryLock(transferLock.waitTime(), transferLock.leaseTime(), transferLock.timeUnit());
             log.info("[MYFIN][AccountLockAop] Receiver Account {} try Lock.", keyMasking(receiveKey));
             if (!availableReceive) {
-                log.info("[MYFIN][AccountLockAop] Receiver Account {} failed trying Lock.", keyMasking(receiveKey));
+                log.error("[MYFIN][AccountLockAop] Receiver Account {} failed trying Lock.", keyMasking(receiveKey));
                 return false;
             }
 
@@ -121,7 +121,7 @@ public class AccountLockAop {
                 log.info("[MYFIN][AccountLockAop] Receiver Account {} unlock.", keyMasking(receiveKey));
 
             } catch (IllegalMonitorStateException e) {
-                log.info("Redisson Lock Already UnLock. serviceName -> {}, key -> {}",
+                log.error("Redisson Lock Already UnLock. serviceName -> {}, key -> {}",
                         method.getName(),
                         keyMasking(sendKey) + " OR " + keyMasking(receiveKey));
             }

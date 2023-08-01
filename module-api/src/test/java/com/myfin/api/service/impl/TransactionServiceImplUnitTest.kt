@@ -10,6 +10,7 @@ import com.myfin.core.exception.impl.BadRequestException
 import com.myfin.core.exception.impl.ForbiddenException
 import com.myfin.core.exception.impl.InternalServerException
 import com.myfin.core.exception.impl.NotFoundException
+import com.myfin.core.repository.AccountRepository
 import com.myfin.core.repository.TransactionRepository
 import com.myfin.core.repository.UserRepository
 import com.myfin.core.type.TransactionType
@@ -29,14 +30,14 @@ import java.util.*
 class TransactionServiceImplUnitTest {
 
     private val userRepository = mockk<UserRepository>()
+    private val accountRepository = mockk<AccountRepository>()
     private val transactionRepository = mockk<TransactionRepository>()
     private val passwordEncoderService = mockk<PasswordEncoderService>()
-    private val accountUserService = mockk<AccountUserSearchService>()
     private val service = TransactionServiceImpl(
         userRepository,
+        accountRepository,
         transactionRepository,
-        passwordEncoderService,
-        accountUserService
+        passwordEncoderService
     )
 
     @Test
