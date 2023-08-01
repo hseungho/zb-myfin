@@ -69,4 +69,18 @@ public class Transaction {
                 .receiver(sender)
                 .build();
     }
+
+    public static Transaction createTransfer(String number,
+                                             Long amount,
+                                             Account sender,
+                                             Account receiver) {
+        return Transaction.builder()
+                .number(number)
+                .amount(amount)
+                .type(TransactionType.TRANSFER)
+                .tradedAt(SeoulDateTime.now())
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+    }
 }

@@ -51,7 +51,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         validateDepositRequest(request, account);
 
-        account.deposit(request.getAmount());
+        account.addBalance(request.getAmount());
 
         return TransactionDto.fromEntity(
                 transactionRepository.save(
@@ -75,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         validateWithdrawalRequest(request, account);
 
-        account.withdrawal(request.getAmount());
+        account.useBalance(request.getAmount());
 
         return TransactionDto.fromEntity(
                 transactionRepository.save(
@@ -96,18 +96,61 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = user.getAccount();
 
         String receiver = request.getReceiver();
-        UserDto receiverUserDto = accountUserSearchService.search(receiver);
+        UserDto receiverUserDto = accountUserSearchService.search(receiver); // TODO Optional 로 변경
+        if (ValidUtil.isNull(receiverUserDto)) {
+            throw new NotFoundException("수취자가 존재하지 않습니다");
+        }
         User receiverUser = userRepository.findById(receiverUserDto.getId())
                 .orElseThrow(() -> new NotFoundException("수취자가 존재하지 않습니다"));
         Account receiverAccount = receiverUser.getAccount();
 
         validateTransferRequest(request, senderAccount, receiverAccount);
 
-        return null;
+        senderAccount.useBalance(request.getAmount());
+        receiverAccount.addBalance(request.getAmount());
+
+        return TransactionDto.fromEntity(
+                transactionRepository.save(
+                        Transaction.createTransfer(
+                                generateTxnNumber(),
+                                request.getAmount(),
+                                senderAccount,
+                                receiverAccount
+                        )
+                )
+        );
     }
 
     private void validateTransferRequest(Transfer.Request request, Account senderAccount, Account receiverAccount) {
-
+        if (ValidUtil.hasNotTexts(request.getAccountNumber(), request.getAccountPassword(), request.getReceiver())
+                || ValidUtil.isNull(request.getAmount())) {
+            // 필수 파라미터를 입력하지 않은 경우
+            throw new BadRequestException("이체에 필요한 모든 정보를 입력해주세요");
+        }
+        if (ValidUtil.isLessThanEqualsToZero(request.getAmount())) {
+            // 송금액이 0원 이하인 경우
+            throw new BadRequestException("송금액을 1원 이상 입력해주세요");
+        }
+        if (ValidUtil.isNull(senderAccount)) {
+            // 송금자가 계좌를 보유하고 있지 않은 경우
+            throw new NotFoundException("계좌를 보유하고 있지 않습니다");
+        }
+        if (ValidUtil.isMismatch(request.getAccountNumber(), senderAccount.getNumber())) {
+            // 요청 계좌번호와 송금자 계좌번호가 일치하지 않은 경우
+            throw new ForbiddenException("계좌번호가 일치하지 않습니다");
+        }
+        if (passwordEncoderService.mismatch(request.getAccountPassword(), senderAccount.getPassword())) {
+            // 요청 계좌비밀번호와 송금자 계좌의 계좌비밀번호가 일치하지 않은 경우
+            throw new ForbiddenException("계좌비밀번호가 일치하지 않습니다");
+        }
+        if (senderAccount.isNotAvailableBalance(request.getAmount())) {
+            // 계좌의 잔액이 부족한 경우
+            throw new BadRequestException("잔액이 부족합니다");
+        }
+        if (ValidUtil.isNull(receiverAccount)) {
+            // 수취자가 계좌를 보유하고 있지 않은 경우
+            throw new NotFoundException("수취자가 계좌를 보유하고 있지 않습니다");
+        }
     }
 
     private void validateWithdrawalRequest(Withdrawal.Request request, Account account) {
@@ -131,7 +174,7 @@ public class TransactionServiceImpl implements TransactionService {
             // 요청 계좌비밀번호와 유저 계좌의 계좌비밀번호가 일치하지 않는 경우
             throw new ForbiddenException("계좌비밀번호가 일치하지 않습니다");
         }
-        if (account.cannotWithdrawal(request.getAmount())) {
+        if (account.isNotAvailableBalance(request.getAmount())) {
             // 계좌 잔액이 출금액보다 적은 경우
             throw new BadRequestException("잔액이 부족합니다");
         }
