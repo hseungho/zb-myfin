@@ -39,6 +39,7 @@ open class TransactionServiceImpl(
         val account : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
             .account
+            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
         validateDepositRequest(request, account)
 
@@ -61,6 +62,7 @@ open class TransactionServiceImpl(
         val account : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
             .account
+            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
         validateWithdrawalRequest(request, account)
 
@@ -82,12 +84,14 @@ open class TransactionServiceImpl(
         val senderAccount : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
             .account
+            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
         val receiverAccount = (accountUserSearchService.search(request.receiver)
             ?: throw NotFoundException("수취자가 존재하지 않습니다")).let {
                 userRepository.findByIdOrNull(it.id)
                     ?: throw NotFoundException("수취자가 존재하지 않습니다")
             }.account
+            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
         validateTransferRequest(request, senderAccount, receiverAccount)
 
@@ -128,10 +132,6 @@ open class TransactionServiceImpl(
             // 입금액이 0보다 작거나 같은 경우
             throw BadRequestException("입금액을 1원 이상 입력해주세요")
         }
-        if (ValidUtil.isNull(account)) {
-            // 유저가 계좌를 보유하고 있지 않은 경우
-            throw NotFoundException("계좌를 보유하고 있지 않습니다")
-        }
         if (ValidUtil.isMismatch(request.accountNumber, account.number)) {
             // 요청 계좌번호와 계좌의 계좌번호가 일치하지 않는 경우
             throw ForbiddenException("계좌번호가 일치하지 않습니다")
@@ -146,10 +146,6 @@ open class TransactionServiceImpl(
         if (ValidUtil.isLessThanEqualsToZero(request.amount)) {
             // 출금액이 0보다 작거나 같은 경우
             throw BadRequestException("출금액을 1원 이상 입력해주세요")
-        }
-        if (ValidUtil.isNull(account)) {
-            // 유저가 계좌를 보유하고 있지 않은 경우
-            throw NotFoundException("계좌를 보유하고 있지 않습니다")
         }
         if (ValidUtil.isMismatch(request.accountNumber, account.number)) {
             // 요청 계좌번호와 유저 계좌의 계좌번호가 일치하지 않는 경우
@@ -175,10 +171,6 @@ open class TransactionServiceImpl(
             // 송금액이 0원 이하인 경우
             throw BadRequestException("송금액을 1원 이상 입력해주세요")
         }
-        if (ValidUtil.isNull(senderAccount)) {
-            // 송금자가 계좌를 보유하고 있지 않은 경우
-            throw NotFoundException("계좌를 보유하고 있지 않습니다")
-        }
         if (ValidUtil.isMismatch(request.accountNumber, senderAccount.number)) {
             // 요청 계좌번호와 송금자 계좌번호가 일치하지 않은 경우
             throw ForbiddenException("계좌번호가 일치하지 않습니다")
@@ -190,10 +182,6 @@ open class TransactionServiceImpl(
         if (senderAccount.isNotAvailableBalance(request.amount)) {
             // 계좌의 잔액이 부족한 경우
             throw BadRequestException("잔액이 부족합니다")
-        }
-        if (ValidUtil.isNull(receiverAccount)) {
-            // 수취자가 계좌를 보유하고 있지 않은 경우
-            throw NotFoundException("수취자가 계좌를 보유하고 있지 않습니다")
         }
     }
 }
