@@ -18,6 +18,7 @@ import com.myfin.core.util.Generator
 import com.myfin.core.util.SecurityUtil
 import com.myfin.core.util.ValidUtil
 import com.myfin.redis.lock.AccountLock
+import com.myfin.redis.lock.TransferLock
 import com.myfin.security.service.PasswordEncoderService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -80,6 +81,7 @@ open class TransactionServiceImpl(
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @TransferLock(sendKey = "#request.getAccountNumber()", receiveKey = "#request.getReceiver()")
     override fun transfer(request: Transfer.Request): TransactionDto {
         val senderAccount : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
@@ -93,7 +95,7 @@ open class TransactionServiceImpl(
             }.account
             ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
 
-        validateTransferRequest(request, senderAccount, receiverAccount)
+        validateTransferRequest(request, senderAccount)
 
         senderAccount.useBalance(request.amount)
         receiverAccount.addBalance(request.amount)
@@ -161,7 +163,7 @@ open class TransactionServiceImpl(
         }
     }
 
-    private fun validateTransferRequest(request: Transfer.Request, senderAccount: Account, receiverAccount: Account) {
+    private fun validateTransferRequest(request: Transfer.Request, senderAccount: Account) {
         if (ValidUtil.hasNotTexts(request.accountNumber, request.accountPassword, request.receiver)
             || ValidUtil.isNull(request.amount)) {
             // 필수 파라미터를 입력하지 않은 경우
