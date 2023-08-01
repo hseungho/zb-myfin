@@ -97,4 +97,22 @@ public class MockFactory {
                 .receiver(account)
                 .build();
     }
+
+    public static Transaction mock_transaction_for_transfer(Account sender,
+                                                            Account receiver,
+                                                            Long amount,
+                                                            LocalDateTime tradedAt) {
+        return Transaction.builder()
+                .id(1L)
+                .number("txn_number")
+                .amount(amount)
+                .type(TransactionType.TRANSFER)
+                .tradedAt(tradedAt)
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+    }
+
+
+
 }

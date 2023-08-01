@@ -40,8 +40,7 @@ open class TransactionServiceImpl(
     override fun deposit(request: Deposit.Request): TransactionDto {
         val account : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
-            .account
-            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
+            .let { it.account ?: throw NotFoundException("계좌를 보유하고 있지 않습니다") }
 
         validateDepositRequest(request, account)
 
@@ -63,8 +62,7 @@ open class TransactionServiceImpl(
     override fun withdrawal(request: Withdrawal.Request): TransactionDto {
         val account : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
-            .account
-            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
+            .let { it.account ?: throw NotFoundException("계좌를 보유하고 있지 않습니다") }
 
         validateWithdrawalRequest(request, account)
 
@@ -86,8 +84,7 @@ open class TransactionServiceImpl(
     override fun transfer(request: Transfer.Request): TransactionDto {
         val senderAccount : Account = (userRepository.findByIdOrNull(SecurityUtil.loginId())
             ?: throw NotFoundException("존재하지 않는 유저입니다"))
-            .account
-            ?: throw NotFoundException("계좌를 보유하고 있지 않습니다")
+            .let { it.account ?:  throw NotFoundException("계좌를 보유하고 있지 않습니다") }
 
         val receiverAccount: Account = accountRepository.findByNumber(request.receiverAccountNumber)
             .orElseThrow { NotFoundException("수취자 계좌를 찾을 수 없습니다") }
@@ -161,7 +158,7 @@ open class TransactionServiceImpl(
     }
 
     private fun validateTransferRequest(request: Transfer.Request, senderAccount: Account) {
-        if (ValidUtil.hasNotTexts(request.accountNumber, request.accountPassword, request.receiver)
+        if (ValidUtil.hasNotTexts(request.accountNumber, request.accountPassword, request.receiver, request.receiverAccountNumber)
             || ValidUtil.isNull(request.amount)) {
             // 필수 파라미터를 입력하지 않은 경우
             throw BadRequestException("이체에 필요한 모든 정보를 입력해주세요")
