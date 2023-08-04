@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
 
         validateDeleteAccountRequest(request, account);
 
-        account.delete();
+        account.delete(passwordEncoderService.encode("0000"));
 
         return AccountDto.fromEntity(account);
     }
