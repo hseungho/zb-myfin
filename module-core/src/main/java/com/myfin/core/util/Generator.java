@@ -12,8 +12,11 @@ public class Generator {
 
     public static String generateAccountNumber() {
         Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 14; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            sb.append(random.nextInt(7) + 2);
+        }
+        for (int i = 0; i < 11; i++) {
             sb.append(random.nextInt(10));
         }
         return sb.toString();
