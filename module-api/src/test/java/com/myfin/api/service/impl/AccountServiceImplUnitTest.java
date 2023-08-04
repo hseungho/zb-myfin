@@ -197,9 +197,10 @@ class AccountServiceImplUnitTest {
                 .accountPassword("1234").build());
         // then
         assertNotNull(result);
-        Assertions.assertEquals("account_number", result.getNumber());
-        Assertions.assertEquals(now, result.getCreatedAt());
+        assertEquals("DEL_account_number", result.getNumber());
+        assertEquals(now, result.getCreatedAt());
         assertNotNull(result.getDeletedAt());
+        assertNull(result.getOwner());
     }
 
     @Test

@@ -68,8 +68,11 @@ public class Account extends BaseEntity {
         return this.deletedAt != null;
     }
 
-    public void delete() {
+    public void delete(final String deletedPassword) {
+        this.number = "DEL_" + this.number;
+        this.password = deletedPassword;
         this.deletedAt = SeoulDateTime.now();
+        this.owner = null;
     }
 
     public void deposit(Long amount) {

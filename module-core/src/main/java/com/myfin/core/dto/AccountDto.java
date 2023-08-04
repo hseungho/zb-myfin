@@ -27,7 +27,7 @@ public class AccountDto {
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .deletedAt(entity.getDeletedAt())
-                .owner(UserDto.fromEntity(entity.getOwner()))
+                .owner(entity.getOwner() != null ? UserDto.fromEntity(entity.getOwner()) : null)
                 .build();
     }
 

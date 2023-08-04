@@ -31,7 +31,11 @@ public class DeleteAccount {
 
         public static Response fromDto(AccountDto dto) {
             return Response.builder()
-                    .accountNumber(dto.getNumber())
+                    .accountNumber(
+                            dto.getNumber().startsWith("DEL_") ?
+                                    dto.getNumber().replace("DEL_", "") :
+                                    dto.getNumber()
+                    )
                     .createdAt(DateUtil.getDateTimeIfPresent(dto.getCreatedAt()))
                     .deletedAt(DateUtil.getDateTimeIfPresent(dto.getDeletedAt()))
                     .build();
