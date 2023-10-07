@@ -1,6 +1,7 @@
 package com.myfin.api.service.impl;
 
 import com.myfin.api.service.AccountUserSearchService;
+import com.myfin.core.dto.AccountDto;
 import com.myfin.core.dto.UserDto;
 import com.myfin.core.entity.Account;
 import com.myfin.core.entity.User;
@@ -38,6 +39,25 @@ public class AccountUserSearchServiceImpl implements AccountUserSearchService {
         }
 
         return UserDto.fromEntity(searchedUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AccountDto searchAccount(String keyword) {
+        Account account;
+
+        if (isPhoneNumber(keyword)) {
+            User searchedUser = userRepository.findByPhoneNum(keyword)
+                    .orElse(null);
+            if (searchedUser == null || searchedUser.getAccount() == null) return null;
+            account = searchedUser.getAccount();
+        } else {
+            account = accountRepository.findByNumber(keyword)
+                    .orElse(null);
+            if (account == null) return null;
+        }
+
+        return AccountDto.fromEntity(account);
     }
 
     private boolean isPhoneNumber(String keyword) {

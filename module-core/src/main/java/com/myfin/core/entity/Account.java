@@ -75,17 +75,19 @@ public class Account extends BaseEntity {
         this.owner = null;
     }
 
-    public void deposit(Long amount) {
-        this.balance += amount;
+    public void addBalance(Long amount) {
+        synchronized (this) {
+            this.balance += amount;
+        }
     }
 
-    public void withdrawal(Long amount) {
+    public void useBalance(Long amount) {
         synchronized (this) {
             this.balance -= amount;
         }
     }
 
-    public boolean cannotWithdrawal(Long amount) {
+    public boolean isNotAvailableBalance(Long amount) {
         synchronized (this) {
             return this.balance < amount;
         }

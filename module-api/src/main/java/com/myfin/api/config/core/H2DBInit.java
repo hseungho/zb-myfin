@@ -68,6 +68,44 @@ public class H2DBInit {
             ).associate(user);
             accountRepository.save(account);
 
+            final String userId2 = "tester2";
+            final String userPw2 = "password1234!";
+            final String userName2 = "테스터2";
+            final LocalDate birthDate2 = LocalDate.of(1997, 1, 1);
+            final boolean userSex2 = false;
+            final String zipCode2 = "10002";
+            final String address1_2 = "서울특별시 강남구 도산대로 17길";
+            final String address2_2 = "10002호";
+            final String phoneNum2 = "01043214321";
+            final String email2 = "tester2@gmail.com";
+
+            User user2 = User.create(
+                    userId2,
+                    passwordEncoderService.encode(userPw2),
+                    userName2,
+                    birthDate2,
+                    userSex2,
+                    zipCode2,
+                    address1_2,
+                    address2_2,
+                    phoneNum2,
+                    email2
+            );
+            Field id2 = user2.getClass().getDeclaredField("id");
+            id2.setAccessible(true);
+            id2.set(user2, "tester_id_2");
+            userRepository.save(user2);
+
+            final String accNumber2 = "4321432143214321";
+            final String accPw2 = "1234";
+            final Long balance2 = 100000L;
+            Account account2 = Account.create(
+                    accNumber2,
+                    passwordEncoderService.encode(accPw2),
+                    balance2
+            ).associate(user2);
+            accountRepository.save(account2);
+
         } catch (Exception e) {
             log.error("Occurred Exception during DB init.", e);
         }

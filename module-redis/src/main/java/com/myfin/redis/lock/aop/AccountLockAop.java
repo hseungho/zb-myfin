@@ -2,6 +2,7 @@ package com.myfin.redis.lock.aop;
 
 import com.myfin.core.util.MyFinSpringELParser;
 import com.myfin.redis.lock.AccountLock;
+import com.myfin.redis.lock.TransferLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -67,6 +68,62 @@ public class AccountLockAop {
                 log.info("[MYFIN][AccountLockAop] Account {} unlock.", keyMasking(key));
             } catch (IllegalMonitorStateException e) {
                 log.info("Redisson Lock Already UnLock. serviceName -> {}, key -> {}", method.getName(), keyMasking(key));
+            }
+        }
+    }
+
+    @Around("@annotation(com.myfin.redis.lock.TransferLock)")
+    public Object lockForTransfer(final ProceedingJoinPoint joinPoint) throws Throwable {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        TransferLock transferLock = method.getAnnotation(TransferLock.class);
+
+        String sendKey = REDISSON_LOCK_PREFIX + MyFinSpringELParser.getDynamicValue(
+                signature.getParameterNames(),
+                joinPoint.getArgs(),
+                transferLock.sendKey());
+
+        String receiveKey = REDISSON_LOCK_PREFIX + MyFinSpringELParser.getDynamicValue(
+                signature.getParameterNames(),
+                joinPoint.getArgs(),
+                transferLock.receiveKey());
+
+        RLock senderLock = redissonClient.getLock(sendKey);
+        RLock receiverLock = redissonClient.getLock(receiveKey);
+        log.info("[MYFIN][AccountLockAop] Sender Account {} get Lock.", keyMasking(sendKey));
+        log.info("[MYFIN][AccountLockAop] Receiver Account {} get Lock.", keyMasking(receiveKey));
+
+        try {
+            boolean availableSend = senderLock.tryLock(transferLock.waitTime(), transferLock.leaseTime(), transferLock.timeUnit());
+            log.info("[MYFIN][AccountLockAop] Sender Account {} try Lock.", keyMasking(sendKey));
+            if (!availableSend) {
+                log.error("[MYFIN][AccountLockAop] Sender Account {} failed trying Lock.", keyMasking(sendKey));
+                return false;
+            }
+
+            boolean availableReceive = receiverLock.tryLock(transferLock.waitTime(), transferLock.leaseTime(), transferLock.timeUnit());
+            log.info("[MYFIN][AccountLockAop] Receiver Account {} try Lock.", keyMasking(receiveKey));
+            if (!availableReceive) {
+                log.error("[MYFIN][AccountLockAop] Receiver Account {} failed trying Lock.", keyMasking(receiveKey));
+                return false;
+            }
+
+            return aopForTransaction.proceed(joinPoint);
+
+        } catch (InterruptedException e) {
+            throw new InterruptedException();
+        } finally {
+            try {
+                // 4) 종료 시 무조건 락을 해제한다.
+                senderLock.unlock();
+                log.info("[MYFIN][AccountLockAop] Sender Account {} unlock.", keyMasking(sendKey));
+                receiverLock.unlock();
+                log.info("[MYFIN][AccountLockAop] Receiver Account {} unlock.", keyMasking(receiveKey));
+
+            } catch (IllegalMonitorStateException e) {
+                log.error("Redisson Lock Already UnLock. serviceName -> {}, key -> {}",
+                        method.getName(),
+                        keyMasking(sendKey) + " OR " + keyMasking(receiveKey));
             }
         }
     }

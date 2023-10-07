@@ -33,42 +33,54 @@ public class Transaction {
     @Column(name = "txn_type", nullable = false)
     private TransactionType type;
 
-    @Column(name = "rct_act_no")
-    @Convert(converter = EncryptConverter.class)
-    private String recipientAccountNumber;
-
     @Column(name = "traded_at", nullable = false)
     private LocalDateTime tradedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "sender_act_id")
+    private Account sender;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "receiver_act_id")
+    private Account receiver;
 
     public static Transaction createDeposit(String number,
                                             Long amount,
-                                            String rctAccountNumber,
-                                            Account account) {
+                                            Account sender) {
         return Transaction.builder()
                 .number(number)
                 .amount(amount)
                 .type(TransactionType.DEPOSIT)
-                .recipientAccountNumber(rctAccountNumber)
                 .tradedAt(SeoulDateTime.now())
-                .account(account)
+                .sender(sender)
+                .receiver(sender)
                 .build();
     }
 
     public static Transaction createWithdrawal(String number,
                                                Long amount,
-                                               String rctAccountNumber,
-                                               Account account) {
+                                               Account sender) {
         return Transaction.builder()
                 .number(number)
                 .amount(amount)
                 .type(TransactionType.WITHDRAWAL)
-                .recipientAccountNumber(rctAccountNumber)
                 .tradedAt(SeoulDateTime.now())
-                .account(account)
+                .sender(sender)
+                .receiver(sender)
+                .build();
+    }
+
+    public static Transaction createTransfer(String number,
+                                             Long amount,
+                                             Account sender,
+                                             Account receiver) {
+        return Transaction.builder()
+                .number(number)
+                .amount(amount)
+                .type(TransactionType.TRANSFER)
+                .tradedAt(SeoulDateTime.now())
+                .sender(sender)
+                .receiver(receiver)
                 .build();
     }
 }
